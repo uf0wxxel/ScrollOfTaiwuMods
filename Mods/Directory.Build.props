@@ -19,6 +19,9 @@
     <Reference Include="$(MSBuildThisFileDirectory)/_ref/unity3d/*.dll">
       <Private>false</Private>
     </Reference>
+    <Reference Include="$(MSBuildThisFileDirectory)/_ref/thirdparties/*.dll">
+      <Private>false</Private>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>

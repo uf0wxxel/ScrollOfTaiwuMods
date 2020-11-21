@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HelloWorld", "Mods\HelloWor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoreInfo", "Mods\MoreInfo\MoreInfo.csproj", "{2E6DCACF-514A-48C3-BBAC-3CD9A49DBE24}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SLManager", "Mods\SLManager\SLManager.csproj", "{D158FB2D-DCFA-44C8-A70D-02C8420674FF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{2E6DCACF-514A-48C3-BBAC-3CD9A49DBE24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E6DCACF-514A-48C3-BBAC-3CD9A49DBE24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E6DCACF-514A-48C3-BBAC-3CD9A49DBE24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D158FB2D-DCFA-44C8-A70D-02C8420674FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D158FB2D-DCFA-44C8-A70D-02C8420674FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D158FB2D-DCFA-44C8-A70D-02C8420674FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D158FB2D-DCFA-44C8-A70D-02C8420674FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
