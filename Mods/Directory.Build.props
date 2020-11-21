@@ -22,9 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.*">
+    <!--<PackageReference Include="SonarAnalyzer.CSharp" Version="8.*">
       <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
+    </PackageReference>-->
   </ItemGroup>
 
   <Import Project="$(MSBuildThisFileDirectory)/_Shared/_Shared.projitems" Label="Shared" />

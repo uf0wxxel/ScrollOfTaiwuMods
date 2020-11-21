@@ -57,21 +57,18 @@ namespace ModPackageTask
             }
 
             var modSettingsPath = Path.Combine(OutputPath, "settings.xml");
-            if (!File.Exists(modSettingsPath))
+            if (File.Exists(modSettingsPath))
             {
-                Log.LogError($"Mod Settings.xml not found: {modSettingsPath}");
-                return false;
-            }
-
-            XDocument modSettings = null;
-            try
-            {
-                modSettings = XDocument.Load(modSettingsPath);
-            }
-            catch
-            {
-                Log.LogError($"Error parsing {modSettingsPath}");
-                return false;
+                XDocument modSettings = null;
+                try
+                {
+                    modSettings = XDocument.Load(modSettingsPath);
+                }
+                catch
+                {
+                    Log.LogError($"Error parsing {modSettingsPath}");
+                    return false;
+                }
             }
 
             var modDir = Path.Combine(PublishPath, modInfo.DisplayName);

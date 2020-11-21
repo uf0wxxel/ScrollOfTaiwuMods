@@ -17,6 +17,8 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "_Shared", "Mods\_Shared\_Sh
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HelloWorld", "Mods\HelloWorld\HelloWorld.csproj", "{78E707C6-4864-448B-9B44-439BD1FEE26E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoreInfo", "Mods\MoreInfo\MoreInfo.csproj", "{2E6DCACF-514A-48C3-BBAC-3CD9A49DBE24}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{78E707C6-4864-448B-9B44-439BD1FEE26E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78E707C6-4864-448B-9B44-439BD1FEE26E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{78E707C6-4864-448B-9B44-439BD1FEE26E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E6DCACF-514A-48C3-BBAC-3CD9A49DBE24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E6DCACF-514A-48C3-BBAC-3CD9A49DBE24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E6DCACF-514A-48C3-BBAC-3CD9A49DBE24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E6DCACF-514A-48C3-BBAC-3CD9A49DBE24}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
