@@ -1,10 +1,8 @@
 <Project>
   <PropertyGroup>
-    <DebugType>portable</DebugType>
     <LangVersion>latest</LangVersion>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
   </PropertyGroup>
-
 </Project>

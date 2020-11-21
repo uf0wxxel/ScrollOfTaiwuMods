@@ -16,6 +16,7 @@ namespace ModPackageTask
         {
             MissingMemberHandling = MissingMemberHandling.Ignore,
             DefaultValueHandling = DefaultValueHandling.Ignore,
+            Formatting = Formatting.Indented,
         };
 
         [Required]

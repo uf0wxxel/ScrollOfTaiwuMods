@@ -1,0 +1,8 @@
+﻿{
+  "Id": "CharacterFloatInfo",
+  "DisplayName": "人物浮动信息",
+  "Author": "Vallind/东风有意/jmswzyk/inpay/ciwei100000/Morbilio",
+  "Version": "1.5.1",
+  "AssemblyName": "CharacterFloatInfo.dll",
+  "EntryMethod": "CharacterFloatInfo.Main.Load"
+}
