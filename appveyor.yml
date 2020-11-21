@@ -1,0 +1,22 @@
+version: 1.0.{build}
+image: Visual Studio 2019
+pull_requests:
+    do_not_increment_build_number: true
+branches:
+    only:
+        - master
+configuration: Release
+build_script:
+    - cmd: dotnet build -c Release /m
+artifacts:
+    - path: '_publish\**\*.zip'
+      name: zip
+for:
+    - branches:
+          only:
+              - master
+      environment:
+          VERCEL_TOKEN:
+              secure: InPNy6LbDQf4YYKZAVYpTbO0uRIKI6D3Dt+nHvOVvS8=
+      on_success:
+          - now --prod -c -C -t %VERCEL_TOKEN%
