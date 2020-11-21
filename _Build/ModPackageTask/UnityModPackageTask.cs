@@ -82,6 +82,13 @@ namespace ModPackageTask
                 modInfo.HomePage = $"https://{HostSiteDomain}/{Uri.EscapeDataString(modInfo.DisplayName)}/";
             }
 
+            // Copy readme files
+            foreach (var readmeFilePath in Directory.EnumerateFiles(OutputPath, "*.md", SearchOption.TopDirectoryOnly))
+            {
+                var publishPath = Path.Combine(modDir, Path.GetFileName(readmeFilePath));
+                File.Copy(readmeFilePath, publishPath, overwrite: true);
+            }
+
             File.WriteAllText(modInfoPath, JsonConvert.SerializeObject(modInfo, jsonSerializerSettings));
 
             {

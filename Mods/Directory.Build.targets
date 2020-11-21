@@ -4,6 +4,9 @@
     <None Update="*.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="*.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Info.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
