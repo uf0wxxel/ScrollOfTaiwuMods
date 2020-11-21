@@ -89,7 +89,7 @@ namespace CharacterFloatInfo
         public int colorLevelBaseOn = 5;
 
         /// <summary>其他人所属商会</summary>
-        public bool showShopid = false;
+        public bool showShopid = true;
         /// <summary>工作村民</summary>
         public bool enableWA = false;
         /// <summary></summary>
@@ -653,7 +653,7 @@ namespace CharacterFloatInfo
         private static string SetLevelText(int id)
         {
             string text = "";
-            text += $"{(isDead ? "享年" : "岁数")}:\u00A0{GetAge(id)}\n";
+            text += $"{(isDead ? "享年" : "年龄")}:\u00A0{GetAge(id)}\n";
             text += $"寿命:\u00A0{GetHealth(id)}";
             return text;
         }
@@ -835,10 +835,16 @@ namespace CharacterFloatInfo
             {
                 if (Main.settings.showShopid)
                 {
-                    text.Append(seperator + DateFile.instance.SetColoer(20002, GetShopName(id)));
+                    var shopName = GetShopName(id);
+                    if (!shopName.EndsWith("商会"))
+                    {
+                        shopName += "商会";
+                    }
+
+                    text.Append(seperator + DateFile.instance.SetColoer(20002, shopName));
                 }
             }
-            text.Append(seperator + "战" + DateFile.instance.GetActorDate(id, 993, true));
+            text.Append(seperator + "战力" + DateFile.instance.GetActorDate(id, 993, true));
 
             return text.ToString();
         }

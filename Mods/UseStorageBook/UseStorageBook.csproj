@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>$(DefaultTargetFramework)</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GuiBaseUI\GuiBaseUI.csproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+
+    <Reference Include="..\GuiBaseUI\bin\$(Configuration)\$(DefaultTargetFramework)\GuiBaseUI.dll">
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>
