@@ -1,0 +1,11 @@
+<Project>
+  <PropertyGroup>
+    <GameVersion>0.2.8.4</GameVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="../_ref/$(GameVersion)/*.dll" />
+    <Reference Include="../_ref/unity3d/*.dll" />
+  </ItemGroup>
+
+</Project>

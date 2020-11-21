@@ -1,0 +1,8 @@
+﻿{
+  "Id": "HelloWorldMod",
+  "DisplayName": "测试MOD",
+  "Author": "hanabi1224",
+  "Version": "0.0.1",
+  "AssemblyName": "HelloWorld.dll",
+  "EntryMethod": "HelloWorld.Main.Load"
+}
