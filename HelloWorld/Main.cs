@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using Harmony12;
 using UnityEngine;
 using UnityModManagerNet;
@@ -8,24 +7,35 @@ namespace HelloWorld
 {
     public static class Main
     {
-        private static Settings _settings;
-        private static UnityModManager.ModEntry.ModLogger _logger;
+        public static UnityModManager.ModEntry Mod { get; private set; }
+        public static Settings Settings { get; private set; }
+        public static UnityModManager.ModEntry.ModLogger Logger => Mod?.Logger;
+        public static string GameVersionText { get; private set; }
 
-        private static bool Load(UnityModManager.ModEntry modEntry)
+        public static bool Load(UnityModManager.ModEntry modEntry)
         {
-            HarmonyInstance.Create(modEntry.Info.Id).PatchAll(Assembly.GetExecutingAssembly());
-            _logger = modEntry.Logger;
-            _settings = UnityModManager.ModSettings.Load<Settings>(modEntry);
-            modEntry.OnGUI = OnGUI;
-            modEntry.OnToggle = OnToggle;
-            modEntry.OnSaveGUI = OnSaveGUI;
+            Mod = modEntry;
+            HarmonyInstance.Create(Mod.Info.Id).PatchAll(Assembly.GetExecutingAssembly());
+            Settings = UnityModManager.ModSettings.Load<Settings>(Mod);
+
+            Mod.OnGUI = OnGUI;
+            Mod.OnToggle = OnToggle;
+            Mod.OnSaveGUI = OnSaveGUI;
+
             return true;
         }
 
         private static void OnGUI(UnityModManager.ModEntry modEntry)
         {
+            if (GameVersionText.IsNullOrEmpty())
+            {
+                GameVersionText = MainMenu.instance?.gameVersionText?.text;
+                Logger.Log($"GameVersion: {GameVersionText}");
+            }
+
             GUILayout.BeginVertical("Box", (GUILayoutOption[])(object)new GUILayoutOption[0]);
-            GUILayout.Label($"测试MOD, 读取当前游戏版本:{MainMenu.instance.gameVersionText.text}");
+            Logger.Log($"GameVersion: {MainMenu.instance.gameVersionText.text}");
+            GUILayout.Label($"测试MOD, 读取当前游戏版本:{GameVersionText}");
             GUILayout.EndVertical();
         }
 
@@ -35,13 +45,13 @@ namespace HelloWorld
             {
                 return false;
             }
-            _settings.Enabled = value;
+            Settings.Enabled = value;
             return true;
         }
 
         private static void OnSaveGUI(UnityModManager.ModEntry modEntry)
         {
-            _settings.Save(modEntry);
+            Settings.Save(modEntry);
         }
     }
 }
