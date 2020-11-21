@@ -18,4 +18,4 @@ artifacts:
     - path: '_publish\**\*.zip'
       name: zip
 on_success:
-    - ps: if ($env:VERCEL_TOKEN) { $a = vercel _publish --prod -c -C -t $env:VERCEL_TOKEN *>$null }
+    - ps: if ($env:VERCEL_TOKEN) { $a = vercel _publish --prod -c -C -t $env:VERCEL_TOKEN 2>&1 | out-null }
