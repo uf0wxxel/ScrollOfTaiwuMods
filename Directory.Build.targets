@@ -1,5 +1,5 @@
 <Project>
-
+  
   <ItemGroup>
     <None Update="*.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

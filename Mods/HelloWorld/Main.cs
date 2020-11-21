@@ -29,12 +29,11 @@ namespace HelloWorld
         {
             if (GameVersionText.IsNullOrEmpty())
             {
-                GameVersionText = MainMenu.instance?.gameVersionText?.text;
+                GameVersionText = MainMenu.instance?.gameVersionText?.text?.Trim();
                 Logger.Log($"GameVersion: {GameVersionText}");
             }
 
             GUILayout.BeginVertical("Box", (GUILayoutOption[])(object)new GUILayoutOption[0]);
-            Logger.Log($"GameVersion: {MainMenu.instance.gameVersionText.text}");
             GUILayout.Label($"测试MOD, 读取当前游戏版本:{GameVersionText}");
             GUILayout.EndVertical();
         }
@@ -45,7 +44,7 @@ namespace HelloWorld
             {
                 return false;
             }
-            Settings.Enabled = value;
+
             return true;
         }
 

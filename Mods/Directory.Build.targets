@@ -1,0 +1,23 @@
+<Project>
+
+  <ItemGroup>
+    <None Update="*.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Info.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <UsingTask
+    TaskName="UnityModPackageTask"
+    AssemblyFile="$(MSBuildThisFileDirectory)ModPackageTask.dll" />
+
+  <Target Name="CustomAfterBuild" AfterTargets="Build" Condition="$(Configuration)=='Release'">
+    <UnityModPackageTask
+      OutputPath="$(OutDir)"
+      PublishPath="$(MSBuildThisFileDirectory)../_publish">
+    </UnityModPackageTask>
+  </Target>
+
+</Project>
