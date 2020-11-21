@@ -1,0 +1,8 @@
+﻿{
+  "Id": "ZhuJianPlus",
+  "DisplayName": "铸剑强效精制",
+  "Author": "fwb,hulian(目前初步修复，出现问题可联系QQ838010064)",
+  "Version": "0.0.3",
+  "AssemblyName": "ZhuJianPlus.dll",
+  "EntryMethod": "ZhuJianPlus.Main.Load"
+}
