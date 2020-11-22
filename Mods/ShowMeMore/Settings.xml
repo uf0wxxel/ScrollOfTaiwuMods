@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Settings xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ShowDebug>false</ShowDebug>
+  <ShowGongFaMassage>true</ShowGongFaMassage>
+  <ShowHitRatio>false</ShowHitRatio>
+  <ShowRealTime>false</ShowRealTime>
+  <ShowQiRate>true</ShowQiRate>
+  <AddHunYuan>true</AddHunYuan>
+  <ShowQuquMassage>true</ShowQuquMassage>
+  <ShowMakingMassage>true</ShowMakingMassage>
+  <ShowItemMassage>true</ShowItemMassage>
+  <ShowItemFavor>true</ShowItemFavor>
+  <ShowWeaponMassage>true</ShowWeaponMassage>
+  <ShowMoreAttackTimeAtEffect>false</ShowMoreAttackTimeAtEffect>
+  <ShowHomeMassage>true</ShowHomeMassage>
+  <ShowHomeMassageAtTop>true</ShowHomeMassageAtTop>
+</Settings>

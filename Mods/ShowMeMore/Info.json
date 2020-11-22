@@ -1,0 +1,8 @@
+﻿{
+    "Id": "ShowMeMore",
+    "DisplayName": "更多信息",
+    "Author": "jmswzyk",
+    "Version": "0.0.9.2",
+    "AssemblyName": "ShowMeMore.dll",
+    "EntryMethod": "ShowMeMore.Main.Load"
+}
