@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using GameData;
 using Harmony12;
 using UnityEngine.UI;
 using UnityModManagerNet;
@@ -10,84 +9,64 @@ namespace ShowMeMore
     [HarmonyPatch(typeof(WindowManage), "ShowItemMassage")]
     public class ShowMeMore_WindowManage_ShowItemMassage_Patch
     {
-        // Token: 0x0600000C RID: 12 RVA: 0x000033A8 File Offset: 0x000015A8
-        public static int getItemMassage(int itemId, string index)
+        public enum TaiwuItemProperty
         {
-            Dictionary<int, Dictionary<string, int>> dictionary = new Dictionary<int, Dictionary<string, int>>();
-            UnityModManager.Logger.Log("物品ID是" + itemId.ToString());
-            bool flag = dictionary.ContainsKey(itemId);
-            if (flag)
+            weaponDamage = 1,
+            weaponAttackTime = 2,
+            ActorBasicMAO = 3,
+            MoreAttackObbs = 4,
+            MoreAttackObbs2 = 5,
+        }
+
+        private static IDictionary<int, Dictionary<TaiwuItemProperty, int>> _itemsInfoCache = new Dictionary<int, Dictionary<TaiwuItemProperty, int>>();
+
+        // Token: 0x0600000C RID: 12 RVA: 0x000033A8 File Offset: 0x000015A8
+        public static int getItemMassage(int itemId, TaiwuItemProperty taiwuItemProperty)
+        {
+            bool flag = _itemsInfoCache.ContainsKey(itemId);
+            if (_itemsInfoCache.TryGetValue(itemId, out var itemInfoCache))
             {
-                bool flag2 = dictionary[itemId].ContainsKey(index);
-                if (flag2)
+                if (itemInfoCache.TryGetValue(taiwuItemProperty, out var property))
                 {
-                    UnityModManager.Logger.Log("已有该物品数据");
-                    return dictionary[itemId][index];
+                    return property;
                 }
-                UnityModManager.Logger.Log("已有该物品，但无属性" + index);
-                dictionary[itemId].Add(index, 0);
+
+                itemInfoCache.Add(taiwuItemProperty, 0);
             }
             else
             {
-                UnityModManager.Logger.Log("无该物品数据");
-                dictionary.Add(itemId, new Dictionary<string, int>());
+                itemInfoCache = new Dictionary<TaiwuItemProperty, int>();
+                _itemsInfoCache.Add(itemId, itemInfoCache);
             }
-            Dictionary<string, int> dictionary2 = new Dictionary<string, int>
-            {
-                {
-                    "weaponDamage",
-                    1
-                },
-                {
-                    "weaponAttackTime",
-                    2
-                },
-                {
-                    "ActorBasicMAO",
-                    3
-                },
-                {
-                    "MoreAttackObbs",
-                    4
-                },
-                {
-                    "MoreAttackObbs2",
-                    5
-                }
-            };
-            int num = 50;
-            int value = int.Parse(DateFile.instance.GetItemDate(itemId, 602, true, -1)) * num / 100;
-            dictionary2["weaponDamage"] = value;
-            int value2 = BattleVaule.instance.GetAttackNeedTime(itemId) * 100 / 25;
-            dictionary2["weaponAttackTime"] = value2;
+
+            var properties = new Dictionary<TaiwuItemProperty, int>();
+
+            //int num = 50;
+            properties[TaiwuItemProperty.weaponDamage] = int.Parse(DateFile.instance.GetItemDate(itemId, 602, true, -1)) * 50 / 100;
+            //dictionary2["weaponDamage"] = value;
+            properties[TaiwuItemProperty.weaponAttackTime] = BattleVaule.instance.GetAttackNeedTime(itemId) * 100 / 25;
+            //dictionary2["weaponAttackTime"] = value2;
             int num2 = 0;
-            int num3 = Main.settings.ShowMoreAttackTimeAtEffect ? 250 : 150;
-            dictionary2["ActorBasicMAO"] = num3;
+            var num3 = properties[TaiwuItemProperty.ActorBasicMAO] = Main.settings.ShowMoreAttackTimeAtEffect ? 250 : 150;
+            //dictionary2["ActorBasicMAO"] = num3;
             int value3 = int.Parse(DateFile.instance.GetItemDate(itemId, 14, true, -1)) * (num3 - num2 * 20 - num2 * num2 * 5) / 100;
             num2 = 1;
             int value4 = int.Parse(DateFile.instance.GetItemDate(itemId, 14, true, -1)) * (num3 - num2 * 20 - num2 * num2 * 5) / 100;
-            dictionary2["MoreAttackObbs"] = value3;
-            dictionary2["MoreAttackObbs2"] = value4;
-            foreach (string key in dictionary2.Keys)
+            properties[TaiwuItemProperty.MoreAttackObbs] = value3;
+            properties[TaiwuItemProperty.MoreAttackObbs2] = value4;
+            foreach (var pair in properties)
             {
-                bool flag3 = !dictionary[itemId].ContainsKey(key);
-                if (flag3)
-                {
-                    dictionary[itemId].Add(key, 0);
-                }
-                dictionary[itemId][key] = dictionary2[key];
+                itemInfoCache[pair.Key] = pair.Value;
             }
-            bool flag4 = dictionary.ContainsKey(itemId) && dictionary[itemId].ContainsKey(index);
-            int result;
-            if (flag4)
+
+            if (itemInfoCache.TryGetValue(taiwuItemProperty, out var result))
             {
-                result = dictionary[itemId][index];
+                return result;
             }
             else
             {
-                result = -1;
+                return -1;
             }
-            return result;
         }
 
         // Token: 0x0600000D RID: 13 RVA: 0x00003644 File Offset: 0x00001844
@@ -98,41 +77,33 @@ namespace ShowMeMore
             {
                 string text = ___baseWeaponMassage;
 
-                var item = Items.GetItem(itemId);
-                if (item?.Count > 0)
-                {
-                    Main.Logger.DebugFileWriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(item));
-                }
-
-                if (DateFile.instance.presetitemDate.TryGetValue(itemId, out var dict2) && dict2?.Count > 0)
-                {
-                    Main.Logger.DebugFileWriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(dict2));
-                }
-
                 bool flag2 = int.Parse(DateFile.instance.GetItemDate(itemId, 1, true, -1)) == 1 && Main.settings.ShowWeaponMassage;
                 if (flag2)
                 {
-                    int num = getItemMassage(itemId, "weaponDamage");
-                    float num2 = 0.1f * (float)getItemMassage(itemId, "weaponAttackTime");
+                    int num = getItemMassage(itemId, TaiwuItemProperty.weaponDamage);
+                    float num2 = 0.1f * (float)getItemMassage(itemId, TaiwuItemProperty.weaponAttackTime);
                     float num3 = (float)num / 10f;
-                    int num4 = getItemMassage(itemId, "ActorBasicMAO");
-                    int num5 = getItemMassage(itemId, "MoreAttackObbs");
+                    int num4 = getItemMassage(itemId, TaiwuItemProperty.ActorBasicMAO);
+                    int num5 = getItemMassage(itemId, TaiwuItemProperty.MoreAttackObbs);
                     string itemDate = DateFile.instance.GetItemDate(itemId, 14, true, -1);
                     text = string.Concat(new string[]
                     {
                         text,
-                        DateFile.instance.SetColoer(10002, "\n【隐藏属性】\n", false),
+                        "\n【隐藏属性】\n".SetTaiwuColor(TaiwuTextColor.DeepBrown),
+                        //DateFile.instance.SetColoer(10002, "\n【隐藏属性】\n", false),
                         WindowManage.instance.Dit(),
                         "基础伤害：",
-                        DateFile.instance.SetColoer(20003, num3.ToString() + "%", false),
+                        $"{num3}%".SetTaiwuColor(TaiwuTextColor.LightYellow),
+                        //DateFile.instance.SetColoer(20003, num3.ToString() + "%", false),
                         "\n",
                         WindowManage.instance.Dit(),
                         Main.settings.ShowMoreAttackTimeAtEffect ? "醉酒后" : "",
                         "连击概率：",
-                        DateFile.instance.SetColoer(20006, num5.ToString() + "%", false),
+                        $"{num5}%".SetTaiwuColor(TaiwuTextColor.Cyan),
+                        //DateFile.instance.SetColoer(20006, num5.ToString() + "%", false),
                         "  "
                     });
-                    num5 = ShowMeMore_WindowManage_ShowItemMassage_Patch.getItemMassage(itemId, "MoreAttackObbs2");
+                    num5 = getItemMassage(itemId, TaiwuItemProperty.MoreAttackObbs2);
                     text = string.Concat(new string[]
                     {
                         text,

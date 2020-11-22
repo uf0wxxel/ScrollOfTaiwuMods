@@ -12,7 +12,7 @@ namespace ModPackageTask
         private const string RepositoryJsonFileName = "repository.json";
         private const string HostSiteDomain = "taiwumods.vercel.app";
 
-        private static readonly JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings
+        private static readonly JsonSerializerSettings _jsonSerializerSettings = new JsonSerializerSettings
         {
             MissingMemberHandling = MissingMemberHandling.Ignore,
             DefaultValueHandling = DefaultValueHandling.Ignore,
@@ -90,7 +90,7 @@ namespace ModPackageTask
                 File.Copy(readmeFilePath, publishPath, overwrite: true);
             }
 
-            File.WriteAllText(modInfoPath, JsonConvert.SerializeObject(modInfo, jsonSerializerSettings));
+            File.WriteAllText(modInfoPath, JsonConvert.SerializeObject(modInfo, _jsonSerializerSettings));
 
             {
                 using var zipFileStream = File.Create(zipFilePath);
@@ -119,7 +119,7 @@ namespace ModPackageTask
                 },
             };
 
-            File.WriteAllText(repositoryJsonPath, JsonConvert.SerializeObject(repo, jsonSerializerSettings));
+            File.WriteAllText(repositoryJsonPath, JsonConvert.SerializeObject(repo, _jsonSerializerSettings));
 
             return true;
         }

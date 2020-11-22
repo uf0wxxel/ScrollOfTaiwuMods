@@ -37,6 +37,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZhuJianPlus", "Mods\ZhuJian
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShowMeMore", "Mods\ShowMeMore\ShowMeMore.csproj", "{3F24E05D-E3BE-41D6-BE02-7853ADA4A1F0}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartWear", "Mods\SmartWear\SmartWear.csproj", "{B7666AA7-82F9-4F67-9EAB-BA85ADD530F0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +93,10 @@ Global
 		{3F24E05D-E3BE-41D6-BE02-7853ADA4A1F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3F24E05D-E3BE-41D6-BE02-7853ADA4A1F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3F24E05D-E3BE-41D6-BE02-7853ADA4A1F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7666AA7-82F9-4F67-9EAB-BA85ADD530F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7666AA7-82F9-4F67-9EAB-BA85ADD530F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7666AA7-82F9-4F67-9EAB-BA85ADD530F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7666AA7-82F9-4F67-9EAB-BA85ADD530F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

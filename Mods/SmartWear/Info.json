@@ -1,0 +1,8 @@
+﻿{
+  "Id": "SmartWear",
+  "DisplayName": "自动切换装备功法",
+  "Author": "litfal",
+  "Version": "1.1.6",
+  "AssemblyName": "SmartWear.dll",
+  "EntryMethod": "SmartWear.Main.Load"
+}
