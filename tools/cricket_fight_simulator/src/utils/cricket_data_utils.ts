@@ -1,11 +1,7 @@
 import cricketPartDataRaw from './../assets/cricketDate.json';
 import * as _ from 'lodash';
 
-import defaultCricketImage from './../assets/images/crickets/Cricket_22_0.png';
-import cricketImages from './../assets/images/crickets/*.png';
-
-console.log(cricketImages);
-console.log(defaultCricketImage);
+import cricketImages from './../assets/images/crickets/*.webp';
 
 export interface ICricketBattleData {
     durability: number,
@@ -110,7 +106,8 @@ function generateCricketCollection(): ICricketData[] {
                 name: p.partName,
                 level: p.level, // 1-9
                 desc: p.desc,
-                imageUrl: defaultCricketImage,
+                // imageUrl: cricketImages[`Cricket_36_${p.imageReferenceId}`],
+                imageUrl: `Cricket_36_${p.imageReferenceId}`,
                 durability: 20,
                 耐力: p.耐力,
                 斗性: p.斗性,
@@ -145,7 +142,8 @@ function generateCricketCollection(): ICricketData[] {
                 name: name,
                 level: bodyPart.level, // 1-9
                 desc: bodyPart.desc,
-                imageUrl: defaultCricketImage,
+                // imageUrl: cricketImages[`Cricket_${colorPart.imageReferenceId}_${bodyPart.imageReferenceId}`],
+                imageUrl: `Cricket_${colorPart.imageReferenceId}_${bodyPart.imageReferenceId}`,
                 durability: 20,
                 耐力: colorPart.耐力 + bodyPart.耐力,
                 斗性: colorPart.斗性 + bodyPart.斗性,

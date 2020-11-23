@@ -1,14 +1,14 @@
 import Vue from 'vue';
-import { Button, Input, List, Avatar, Tooltip, Row, Col, Timeline, Divider, message } from 'ant-design-vue';
+import { Button, Input, List, Tooltip, Row, Col, Timeline, Divider, message } from 'ant-design-vue';
 import VueVirtualScroller from 'vue-virtual-scroller'
 import VueDraggable from 'vue-draggable'
 import 'ant-design-vue/dist/antd.css';
-import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 import App from './App.vue';
 
 Vue.config.productionTip = false;
 
-[VueDraggable, VueVirtualScroller, Button, Input, List, Avatar, Tooltip, Row, Col, Timeline, Divider].forEach(e => {
+[VueDraggable, VueVirtualScroller, Button, Input, List, Tooltip, Row, Col, Timeline, Divider].forEach(e => {
   Vue.use(e);
 });
 

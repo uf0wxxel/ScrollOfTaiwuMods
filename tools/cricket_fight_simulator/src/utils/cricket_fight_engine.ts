@@ -144,14 +144,14 @@ function getSingleAttackDamageWinner(
     var critical = false;
     var hurt = false;
 
-    log({ message: `${battleTypeText}${display(attacker)}发动${battleTypeTextRaw}，${hpDamageWeapon}伤害${hpDamage}，气势伤害${spDamage}。` });
+    log({ message: `${battleTypeText}${display(attacker)}发动${battleTypeTextRaw}，当前${hpDamageWeapon}伤害${hpDamage}，气势伤害${spDamage}。` });
 
     critical = roll(attacker.暴击率);
     if (critical) {
         hpDamage += attacker.暴击增伤;
         const spDamageIncrease = possibleSpDamage - spDamage;
         spDamage = possibleSpDamage;
-        log({ message: `【暴击】 ${display(attacker)}触发暴击(${(attacker.暴击率 * 100).toFixed(0)}%)，${hpDamageWeapon}伤害${hpDamage}(+${attacker.暴击增伤})，气势伤害${spDamage}(+${spDamageIncrease})。` });
+        log({ message: `【暴击】 ${display(attacker)}触发暴击(${(attacker.暴击率 * 100).toFixed(0)}%)，当前${hpDamageWeapon}伤害${hpDamage}(+${attacker.暴击增伤})，气势伤害${spDamage}(+${spDamageIncrease})。` });
     }
 
     var blocked = roll(defender.格挡概率);
@@ -159,7 +159,7 @@ function getSingleAttackDamageWinner(
     if (blocked) {
         hpDamage = substract(hpDamage, defender.格挡值);
         spDamage = substract(spDamage, defender.格挡值);
-        log({ message: `【格挡】 ${display(defender)}触发格挡(${(defender.格挡概率 * 100).toFixed(0)}%)。 对方${hpDamageWeapon}伤害${hpDamage}(-${defender.格挡值})，气势伤害${spDamage}(-${defender.格挡值})。` });
+        log({ message: `【格挡】 ${display(defender)}触发格挡(${(defender.格挡概率 * 100).toFixed(0)}%)。 对方当前${hpDamageWeapon}伤害${hpDamage}(-${defender.格挡值})，气势伤害${spDamage}(-${defender.格挡值})。` });
     }
     else if (critical) {
         hurt = roll(hurtRate);

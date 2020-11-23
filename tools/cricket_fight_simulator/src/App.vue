@@ -17,7 +17,7 @@
                                         </div>
                                     </CricketToolTipComponent>
                                 </div>
-                                <a-avatar slot="avatar" :src="item.imageUrl" class="ququ-img" />
+                                <CricketImageComponent slot="avatar" :className="item.imageUrl" :size="50"></CricketImageComponent>
                             </a-list-item-meta>
                         </a-list-item>
                     </a-list>
@@ -88,11 +88,12 @@ import { cricketFight, ICricketFlightLogRecord, isCricketLost } from './utils/cr
 import { clone } from './utils/utils';
 import CricketCardComponent from './components/CricketCard.vue';
 import CricketToolTipComponent from './components/CricketToolTip.vue';
+import CricketImageComponent from './components/CricketImage.vue';
 import { VueDraggableEvent, VueDraggableOptions } from 'vue-draggable/types/vue-draggable-options';
 import * as _ from 'lodash';
 
 @Component({
-    components: { CricketCardComponent, CricketToolTipComponent },
+    components: { CricketCardComponent, CricketToolTipComponent, CricketImageComponent },
 })
 export default class CricketSimulatorPage extends Vue {
     filterText = '';
@@ -384,14 +385,19 @@ export default class CricketSimulatorPage extends Vue {
         overflow-y: auto;
         max-height: 88%;
         .desc {
-            line-height: 32px;
+            line-height: 50px;
             color: #777;
         }
         .ququ-list-item {
+            padding: 2px 0;
             &:hover {
                 cursor: pointer;
                 box-shadow: 1px 0px 1px cyan;
             }
+        }
+        .ququ-img {
+            width: 50px;
+            height: 50px;
         }
     }
 

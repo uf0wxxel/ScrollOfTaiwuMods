@@ -4,7 +4,13 @@
             <div class="ququ-side">
                 {{ sideText }}
             </div>
-            <img :src="cricket.imageUrl" class="ququ-img" />
+            <div class="ququ-img">
+                <CricketImageComponent
+                    :className="cricket.imageUrl"
+                    :rotateDeg="rotateDeg"
+                    :size="150"
+                ></CricketImageComponent>
+            </div>
             <div class="ququ-name">
                 {{ cricket.name }}
             </div>
@@ -55,11 +61,13 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 import * as _ from 'lodash';
+import CricketImageComponent from './CricketImage.vue';
 import { ICricketData } from '../utils/cricket_data_utils';
 import { clone } from './../utils/utils';
+import emptyImgRaw from './../assets/images/0.gif';
 
 @Component({
-    components: {},
+    components: { CricketImageComponent },
 })
 export default class CricketCardComponent extends Vue {
     @Prop({ default: null })
@@ -71,10 +79,16 @@ export default class CricketCardComponent extends Vue {
     @Prop({ default: '' })
     refreshToken!: string;
 
+    emptyImg = emptyImgRaw;
+
     cricketCopy: ICricketData | null = null;
 
     get sideText() {
         return this.side === 'red' ? '红方' : '蓝方';
+    }
+
+    get rotateDeg() {
+        return this.side === 'red' ? 0 : 180;
     }
 
     @Watch('cricket')
@@ -105,14 +119,10 @@ export default class CricketCardComponent extends Vue {
 
     .blue {
         color: blue;
-        img {
-            transform: rotate(180deg);
-        }
     }
 
     .ququ-img {
-        width: 100%;
-        height: 100%;
+        text-align: center;
     }
     .ququ-side {
         text-align: center;
