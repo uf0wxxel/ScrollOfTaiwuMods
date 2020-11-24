@@ -47,6 +47,37 @@
                         >模拟10000场决斗</a-button
                     >
                     <br />
+                    <a-button-group>
+                        <a-popconfirm
+                            ok-text="确定"
+                            cancel-text="取消"
+                            @confirm="onFindRivalsConfirm(true)"
+                        >
+                        <template slot="title">
+                            <div style="max-width:20vw;">
+                                仅从以下品级中查找
+                                <br />
+                                <a-checkbox v-model="findRivalOptionCheckBaBai" style="color:red;">八败(容易卡死慎选)</a-checkbox>
+                        <a-checkbox-group v-model="findRivalFilters" :options="findRivalOptions" :defaultValue="findRivalOptionsDefault" />
+                        </div></template>
+                            <a-button type="danger" :disabled="isFightButtonDisabled">找克星</a-button>
+                        </a-popconfirm>
+                        <a-popconfirm
+                            ok-text="确定"
+                            cancel-text="取消"
+                            @confirm="onFindRivalsConfirm(false)"
+                        >
+                        <template slot="title">
+                            <div style="max-width:20vw;">
+                                仅从以下品级中查找
+                                <br />
+                                <a-checkbox v-model="findRivalOptionCheckBaBai" style="color:red;">八败(容易卡死慎选)</a-checkbox>
+                        <a-checkbox-group v-model="findRivalFilters" :options="findRivalOptions" :defaultValue="findRivalOptionsDefault" />
+                        </div></template>
+                            <a-button type="primary" :disabled="isFightButtonDisabled">找克星</a-button>
+                        </a-popconfirm>
+                    </a-button-group>
+                    <br />
                     <a-button type="default" :disabled="isFightButtonDisabled" @click="restoreCricketStatus"
                         >还原促织状态</a-button
                     >
@@ -91,6 +122,7 @@ import CricketToolTipComponent from './components/CricketToolTip.vue';
 import CricketImageComponent from './components/CricketImage.vue';
 import { VueDraggableEvent, VueDraggableOptions } from 'vue-draggable/types/vue-draggable-options';
 import * as _ from 'lodash';
+import { IformCreateOption } from 'ant-design-vue/types/form/form';
 
 @Component({
     components: { CricketCardComponent, CricketToolTipComponent, CricketImageComponent },
@@ -198,10 +230,12 @@ export default class CricketSimulatorPage extends Vue {
 
     onDrop(e: VueDraggableEvent) {
         const cricketName = e.items[0].innerText;
-        console.log(e);
+        // console.log(e);
         console.log(cricketName);
 
         const cricket = clone(_.find(cricketCollection, (c) => c.name === cricketName))!;
+
+        console.log(cricket);
 
         const dropTargetClassName = e.droptarget.className;
         if (dropTargetClassName.indexOf('home') >= 0) {
@@ -259,6 +293,150 @@ export default class CricketSimulatorPage extends Vue {
         this.cricketAwayCopy = clone(c);
     }
 
+    isRival(
+        c: ICricketData,
+        other: ICricketData,
+    ): { isRival: boolean; win: number; loss: number; opponent: ICricketData } {
+        // matchCount, win threshold inclusive
+        const searchSteps: number[][] = [
+            // [10, 1],
+            [20, 5],
+            [100, 40],
+            [200, 100],
+        ];
+
+        const result = { isRival: false, win: 0, loss: 0, opponent: other };
+        if (c.name === other.name) {
+            return result;
+        }
+
+        var aborted = false;
+        const maxGameCount = _.last(searchSteps)![0];
+        searchSteps.forEach((arr) => {
+            if (aborted) {
+                return;
+            }
+
+            const gameCount = arr[0];
+            const minWinCount = arr[1];
+
+            while (result.win + result.loss < gameCount && (result.loss < minWinCount || gameCount === maxGameCount)) {
+                const home = clone(c);
+                const away = clone(other);
+                const winner = cricketFight(
+                    home,
+                    away,
+                    (r) => {},
+                    (c) => c.name,
+                );
+
+                if (home === winner) {
+                    result.win += 1;
+                } else {
+                    result.loss += 1;
+                }
+            }
+
+            aborted = result.loss < minWinCount;
+        });
+
+        result.isRival = !aborted;
+
+        return result;
+    }
+
+    findRivals(c: ICricketData, levelFilters: number[] = [], checkBaBai = false) {
+        const levelGroups = _.chain(cricketCollection)
+            .groupBy((c) => c.level)
+            .value();
+
+        if (checkBaBai && levelFilters.indexOf(9) < 0) {
+            levelFilters.push(9);
+        }
+
+        const rivals: { isRival: boolean; win: number; loss: number; opponent: ICricketData }[] = [];
+        const maxRivalFound = 15;
+        var rivalFound = 0;
+        for (var i = 9; i > 0 && rivalFound < maxRivalFound; i--) {
+            if (levelFilters?.length > 0 && levelFilters.indexOf(i) < 0) {
+                continue;
+            }
+
+            const candidates = levelGroups[i];
+            for (var j = 0; j < candidates.length && rivalFound < maxRivalFound; j++) {
+                var opp = candidates[j];
+                if (!checkBaBai && opp.name.indexOf('八败') >= 0) {
+                    continue;
+                }
+
+                if (c.name === opp.name) {
+                    continue;
+                }
+
+                const rivalResult = this.isRival(c, opp);
+                rivals.push(rivalResult);
+                if (rivalResult.isRival) {
+                    rivalFound += 1;
+                }
+            }
+        }
+
+        return _.chain(rivals)
+            .filter((r) => r.loss > 0)
+            .orderBy((r) => r.loss / (r.win + r.loss), 'desc')
+            .take(maxRivalFound)
+            .value();
+    }
+
+    findRivalFilters = [9, 8, 7, 6];
+    findRivalOptions = [
+        { label: '异品促织王', value: 9 },
+        { label: '真色促织王', value: 8 },
+        { label: '大将军', value: 7 },
+        { label: '杂号将军', value: 6 },
+        { label: '护军', value: 5 },
+        { label: '都尉', value: 4 },
+        { label: '校尉', value: 3 },
+        { label: '副尉', value: 2 },
+        { label: '小卒', value: 1 },
+    ];
+    findRivalOptionCheckBaBai = false;
+
+    onFindRivalsConfirm(isHome: Boolean) {
+        this.gameRecords.splice(0);
+        this.restoreCricketStatus();
+        this.scoreHome = this.scoreAway = 0;
+
+        const c = isHome ? this.cricketHomeCopy : this.cricketAwayCopy;
+        if (!c) {
+            return;
+        }
+
+        const results = this.findRivals(c!, this.findRivalFilters, this.findRivalOptionCheckBaBai);
+        const logMsgs: ICricketFlightLogRecord[] = [
+            {
+                message: `<span style="color:${isHome ? 'red' : 'blue'};">${
+                    c!.name
+                }</span> (克星太多时只显示找到的前20个)`,
+            },
+        ];
+        this.gameRecords.push(logMsgs);
+        if (results?.length > 0) {
+            results.forEach((r) => {
+                var msg = `<div style="width:100px;display: inline-block;white-space:nowrap;">${
+                    r.opponent.name
+                }</div>胜率${((r.win / (r.win + r.loss)) * 100).toFixed(1)}% (${r.win}:${r.loss})`;
+                msg = `<span style="color:${r.isRival ? 'green' : 'grey'};">${msg}</span>`;
+
+                logMsgs.push({
+                    message: msg,
+                });
+            });
+        } else {
+            logMsgs.push({ message: '没有找到对手' });
+        }
+    }
+
     mounted() {
         for (var i = 0; i < cricketCollection.length; i++) {
             const cricket = cricketCollection[i];
@@ -274,6 +452,17 @@ export default class CricketSimulatorPage extends Vue {
                 }
             }
         }
+
+        // const groups = _.chain(cricketCollection)
+        //     .groupBy((c) => c.level)
+        //     .value();
+
+        // console.log(groups);
+
+        // const x = _.find(cricketCollection, (c) => c.name.indexOf('玉尾') >= 0);
+        // console.log(x);
+        // const rivals = this.findRivals(x!, [6, 5]);
+        // console.log(rivals);
     }
 }
 </script>

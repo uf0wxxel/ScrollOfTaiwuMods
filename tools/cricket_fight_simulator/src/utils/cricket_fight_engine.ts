@@ -280,8 +280,9 @@ export function cricketFight(
     }
 
     var round = 1;
+    var roundLimit = 1000;
     while (!checkRoundWinner(attacker, defender, round++, false, 0, log, display)
-        && round < 100) {
+        && round < roundLimit) {
         var tmp = attacker;
         attacker = defender;
         defender = tmp;

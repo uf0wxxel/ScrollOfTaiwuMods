@@ -51,8 +51,9 @@ export interface ICricketPartData extends ICricketData {
 
 function parseCricketPart(id: number, dict: { string: string }): ICricketPartData {
     const level = parseInt(dict["1"]);
-    const isColorPart = parseInt(dict["3"]) != 0 && level < 8;
-    const isBodyPart = !isColorPart && level < 8;
+    // 呆物 id 为 0
+    const isColorPart = id > 0 && parseInt(dict["3"]) != 0 && level < 8;
+    const isBodyPart = id > 0 && !isColorPart && level < 8;
 
     const nameArray = (dict["0"] as string).split('|');
 
@@ -132,15 +133,16 @@ function generateCricketCollection(): ICricketData[] {
         for (var j = 0; j < bodyParts.length; j++) {
             const colorPart = colorParts[i];
             const bodyPart = bodyParts[j];
-            if (colorPart.level > bodyPart.level) {
-                continue;
-            }
+            // if (colorPart.level > bodyPart.level) {
+            //     continue;
+            // }
 
             const name = colorPart.namingPriority < bodyPart.namingPriority ? `${bodyPart.partName}${colorPart.partNameAsSuffix}` : `${colorPart.partName}${bodyPart.partName}`;
+            const level = Math.max(bodyPart.level, colorPart.level);
 
             results.push({
                 name: name,
-                level: bodyPart.level, // 1-9
+                level: level, // 1-9
                 desc: bodyPart.desc,
                 // imageUrl: cricketImages[`Cricket_${colorPart.imageReferenceId}_${bodyPart.imageReferenceId}`],
                 imageUrl: `Cricket_${colorPart.imageReferenceId}_${bodyPart.imageReferenceId}`,

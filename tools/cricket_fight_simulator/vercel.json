@@ -1,0 +1,51 @@
+{
+    "version": 2,
+    "build": {
+        "env": {
+            "VUE_APP_NOW_BUILD": "true"
+        }
+    },
+    "builds": [
+        {
+            "src": "package.json",
+            "use": "@vercel/static-build"
+        }
+    ],
+    "routes": [
+        {
+            "src": "^/.*",
+            "headers": {
+                "cache-control": "max-age=60"
+            },
+            "continue": true
+        },
+        {
+            "src": "^/[^/]*\\.(?:txt|json)",
+            "headers": {
+                "cache-control": "max-age=300"
+            },
+            "continue": true
+        },
+        {
+            "src": "^/([^.]+\\.){2}(?:js|css|ico|png|svg|jpg|webp|gif|ttf|woff|woff2|mp3|mp4)",
+            "headers": {
+                "cache-control": "max-age=31536000, immutable"
+            },
+            "continue": true
+        },
+        {
+            "src": "^/(?:src)\\.(?:.+)\\.(?:.+)",
+            "headers": {
+                "cache-control": "max-age=31536000, immutable"
+            },
+            "continue": true
+        },
+        {
+            "handle": "filesystem"
+        },
+        {
+            "src": "^.*",
+            "dest": "/index.html"
+        }
+    ]
+}
