@@ -95,8 +95,8 @@ export default class CricketCardComponent extends Vue {
     onCricketChanged(value: ICricketData, oldValue: ICricketData) {
         if (value) {
             value.side = this.sideText;
-            if (!this.cricketCopy) {
-                this.cricketCopy = value;
+            if (!this.cricketCopy || value.name != this.cricketCopy?.name) {
+                this.cricketCopy = clone(value);
             }
         }
     }

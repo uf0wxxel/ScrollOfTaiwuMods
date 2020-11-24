@@ -11,13 +11,25 @@
                         <a-list-item slot="renderItem" slot-scope="item, index" class="ququ-list-item">
                             <a-list-item-meta>
                                 <div slot="description" class="desc">
-                                    <CricketToolTipComponent :cricket="item">
-                                        <div>
-                                            {{ item.name }}
-                                        </div>
-                                    </CricketToolTipComponent>
+                                    <!-- <CricketToolTipComponent :cricket="item"> -->
+                                        <a-popover trigger="click" :title="item.name">
+                                            <div slot="content">
+                                                <a-button type="danger" @click="setCricketHome(item)">
+                                                    设置为红方
+                                                </a-button>
+                                                <a-button type="primary" @click="setCricketAway(item)">
+                                                    设置为蓝方
+                                                </a-button>
+                                            </div>
+                                            <div>
+                                                {{ item.name }}
+                                            </div>
+                                        </a-popover>                                        
+                                    <!-- </CricketToolTipComponent> -->
                                 </div>
-                                <CricketImageComponent slot="avatar" :className="item.imageUrl" :size="50"></CricketImageComponent>
+                                <CricketToolTipComponent slot="avatar" :cricket="item">
+                                    <CricketImageComponent :className="item.imageUrl" :size="50"></CricketImageComponent>
+                                </CricketToolTipComponent>                                
                             </a-list-item-meta>
                         </a-list-item>
                     </a-list>
@@ -452,17 +464,6 @@ export default class CricketSimulatorPage extends Vue {
                 }
             }
         }
-
-        // const groups = _.chain(cricketCollection)
-        //     .groupBy((c) => c.level)
-        //     .value();
-
-        // console.log(groups);
-
-        // const x = _.find(cricketCollection, (c) => c.name.indexOf('玉尾') >= 0);
-        // console.log(x);
-        // const rivals = this.findRivals(x!, [6, 5]);
-        // console.log(rivals);
     }
 }
 </script>
