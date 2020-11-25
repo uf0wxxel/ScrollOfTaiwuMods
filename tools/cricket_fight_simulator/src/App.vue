@@ -67,10 +67,14 @@
                         >
                         <template slot="title">
                             <div style="max-width:20vw;">
-                                仅从以下品级中查找
+                                搜索品级与类型
                                 <br />
-                                <a-checkbox v-model="findRivalOptionCheckBaBai" style="color:red;">八败(容易卡死慎选)</a-checkbox>
-                        <a-checkbox-group v-model="findRivalFilters" :options="findRivalOptions" :defaultValue="findRivalOptionsDefault" />
+                                <!-- <a-checkbox v-model="findRivalOptionCheckBaBai" style="color:red;">八败(容易卡死慎选)</a-checkbox> -->
+                        <a-checkbox-group v-model="findRivalFilters" :options="findRivalOptions" :defaultValue="findRivalOptionsDefault"></a-checkbox-group>
+                        <a-checkbox v-model="searchMomentum">气势型</a-checkbox>
+                        <a-checkbox v-model="searchPlier">牙钳型</a-checkbox>
+                        <a-checkbox v-model="searchWresling">角力型</a-checkbox>
+                        <a-checkbox v-model="searchAverage">均衡型</a-checkbox>
                         </div></template>
                             <a-button type="danger" :disabled="isFightButtonDisabled">找克星</a-button>
                         </a-popconfirm>
@@ -81,10 +85,14 @@
                         >
                         <template slot="title">
                             <div style="max-width:20vw;">
-                                仅从以下品级中查找
+                                搜索品级与类型
                                 <br />
-                                <a-checkbox v-model="findRivalOptionCheckBaBai" style="color:red;">八败(容易卡死慎选)</a-checkbox>
-                        <a-checkbox-group v-model="findRivalFilters" :options="findRivalOptions" :defaultValue="findRivalOptionsDefault" />
+                                <!-- <a-checkbox v-model="findRivalOptionCheckBaBai" style="color:red;">八败(容易卡死慎选)</a-checkbox> -->
+                        <a-checkbox-group v-model="findRivalFilters" :options="findRivalOptions" :defaultValue="findRivalOptionsDefault"></a-checkbox-group>
+                        <a-checkbox v-model="searchMomentum">气势型</a-checkbox>
+                        <a-checkbox v-model="searchPlier">牙钳型</a-checkbox>
+                        <a-checkbox v-model="searchWresling">角力型</a-checkbox>
+                        <a-checkbox v-model="searchAverage">均衡型</a-checkbox>
                         </div></template>
                             <a-button type="primary" :disabled="isFightButtonDisabled">找克星</a-button>
                         </a-popconfirm>
@@ -357,14 +365,17 @@ export default class CricketSimulatorPage extends Vue {
         return result;
     }
 
-    findRivals(c: ICricketData, levelFilters: number[] = [], checkBaBai = false) {
+    findRivals(
+        c: ICricketData,
+        searchMomentum: boolean = true,
+        searchPlier: boolean = true,
+        searchWresling: boolean = true,
+        searchAverage: boolean = true,
+        levelFilters: number[] = [],
+    ) {
         const levelGroups = _.chain(cricketCollection)
             .groupBy((c) => c.level)
             .value();
-
-        if (checkBaBai && levelFilters.indexOf(9) < 0) {
-            levelFilters.push(9);
-        }
 
         const rivals: { isRival: boolean; win: number; loss: number; opponent: ICricketData }[] = [];
         const maxRivalFound = 15;
@@ -377,11 +388,23 @@ export default class CricketSimulatorPage extends Vue {
             const candidates = levelGroups[i];
             for (var j = 0; j < candidates.length && rivalFound < maxRivalFound; j++) {
                 var opp = candidates[j];
-                if (!checkBaBai && opp.name.indexOf('八败') >= 0) {
+                if (c.name === opp.name) {
                     continue;
                 }
 
-                if (c.name === opp.name) {
+                const oppMaxAttr = _.max([opp.气势, opp.牙钳, opp.角力]);
+                const isAverage =
+                    oppMaxAttr! < 3 || oppMaxAttr! < (oppMaxAttr! < 5 ? 0.5 : 0.45) * (opp.气势 + opp.牙钳 + opp.角力);
+                const isMomentum = !isAverage && oppMaxAttr === opp.气势;
+                const isPlier = !isAverage && oppMaxAttr === opp.牙钳;
+                const isWresling = !isAverage && oppMaxAttr === opp.角力;
+
+                const included =
+                    (searchMomentum && isMomentum) ||
+                    (searchPlier && isPlier) ||
+                    (searchWresling && isWresling) ||
+                    (searchAverage && isAverage);
+                if (!included) {
                     continue;
                 }
 
@@ -412,7 +435,11 @@ export default class CricketSimulatorPage extends Vue {
         { label: '副尉', value: 2 },
         { label: '小卒', value: 1 },
     ];
-    findRivalOptionCheckBaBai = false;
+    searchMomentum: boolean = true;
+    searchPlier: boolean = true;
+    searchWresling: boolean = true;
+    searchAverage: boolean = true;
+    // findRivalOptionCheckBaBai = false;
 
     onFindRivalsConfirm(isHome: Boolean) {
         this.gameRecords.splice(0);
@@ -424,7 +451,14 @@ export default class CricketSimulatorPage extends Vue {
             return;
         }
 
-        const results = this.findRivals(c!, this.findRivalFilters, this.findRivalOptionCheckBaBai);
+        const results = this.findRivals(
+            c!,
+            this.searchMomentum,
+            this.searchPlier,
+            this.searchWresling,
+            this.searchAverage,
+            this.findRivalFilters,
+        );
         const logMsgs: ICricketFlightLogRecord[] = [
             {
                 message: `<span style="color:${isHome ? 'red' : 'blue'};">${
@@ -542,11 +576,14 @@ export default class CricketSimulatorPage extends Vue {
                 display: flex;
                 flex-direction: column;
                 padding-top: 5vh;
+                .ant-btn-group {
+                    text-align: center;
+                }
             }
 
             .battle-result {
-                padding-top: 50px;
-                font-size: 50px;
+                padding-top: 40px;
+                font-size: 40px;
                 text-align: center;
             }
         }

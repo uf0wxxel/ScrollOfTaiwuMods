@@ -72,7 +72,7 @@ function parseCricketPart(id: number, dict: { string: string }): ICricketPartDat
         namingPriority: parseInt(dict["2"]), // 1-9
         imageReferenceId: parseInt(dict["96"]),
 
-        durability: 20,
+        durability: 15,
         耐力: parseInt(dict["11"]),
         斗性: parseInt(dict["12"]),
 
@@ -109,7 +109,7 @@ function generateCricketCollection(): ICricketData[] {
                 desc: p.desc,
                 // imageUrl: cricketImages[`Cricket_36_${p.imageReferenceId}`],
                 imageUrl: `Cricket_36_${p.imageReferenceId}`,
-                durability: 20,
+                durability: 15,
                 耐力: p.耐力,
                 斗性: p.斗性,
                 气势: p.气势,
@@ -146,7 +146,7 @@ function generateCricketCollection(): ICricketData[] {
                 desc: bodyPart.desc,
                 // imageUrl: cricketImages[`Cricket_${colorPart.imageReferenceId}_${bodyPart.imageReferenceId}`],
                 imageUrl: `Cricket_${colorPart.imageReferenceId}_${bodyPart.imageReferenceId}`,
-                durability: 20,
+                durability: 15,
                 耐力: colorPart.耐力 + bodyPart.耐力,
                 斗性: colorPart.斗性 + bodyPart.斗性,
                 气势: colorPart.气势 + bodyPart.气势,

@@ -184,32 +184,23 @@ function getSingleAttackDamageWinner(
 function checkRoundWinner(
     attacker: ICricketData,
     defender: ICricketData,
-    round: number,
-    isExtraAttack: boolean,
-    counterAttackTriggeredInRound: number,
+    // round: number,
+    // counterAttackTriggeredInRound: number,
     log: (r: ICricketFlightLogRecord) => void,
     display: (c: ICricketData) => string): boolean {
-    if (isExtraAttack) {
-        log({ message: `${display(attacker)}在对方半场发动追击。` });
-    }
-    else {
-        // log({ message: `【第${round}轮】 ${display(attacker)}在对方半场发动进攻。`, roundChanged: true, round: round, });
-        log({ message: `【第${round}轮】 开始。`, roundChanged: true, round: round, });
-    }
-
+    // log({ message: `【第${round}轮】 开始。`, roundChanged: true, round: round, });
     if (getSingleAttackDamageWinner(attacker, defender, false, false, log, display)) {
         return true;
     }
 
     const caRateDropBy = 0.05;
-    var counterAttackTriggered = false;
+    var counterAttackTriggeredInRound = 0;
 
     var caAttacker = defender;
     var caDefender = attacker;
     var counterAttack = roll(caAttacker.反击率 - caRateDropBy * counterAttackTriggeredInRound);
 
     while (counterAttack) {
-        counterAttackTriggered = true;
         counterAttackTriggeredInRound += 1;
 
         const isHomeCounterAttack = caAttacker === defender;
@@ -223,14 +214,6 @@ function checkRoundWinner(
         caDefender = tmp;
         counterAttack = roll(caAttacker.反击率 - caRateDropBy * counterAttackTriggeredInRound);
     }
-
-    // Attacker failed to counterattack on defender's half court, defender makes an extra attack on attacker's half court
-    // if (counterAttackTriggered
-    //     && caAttacker === attacker) {
-    //     if (checkRoundWinner(defender, attacker, round, true, counterAttackTriggeredInRound, log, display)) {
-    //         return true;
-    //     }
-    // }
 
     return false;
 }
@@ -248,45 +231,54 @@ export function cricketFight(
     var attacker = a;
     var defender = b;
 
-    var swapAttacker: boolean;
-    if (a.气势 > b.气势) {
-        // 20% chance to let b attack first
-        swapAttacker = roll(0.2);
-        b.斗性 = substract(b.斗性, a.气势);
-        log({
-            message: `【预备轮】 ${display(a)}发动气势攻击(${a.气势})，${display(b)}斗性${b.斗性}(-${a.气势})`
-        });
-    }
-    else if (a.气势 < b.气势) {
-        // 80% chance to let b attack first
-        swapAttacker = roll(0.8);
-        a.斗性 = substract(a.斗性, b.气势);
-        log({
-            message: `【预备轮】 ${display(b)}发动气势攻击(${b.气势})，${display(a)}斗性${a.斗性}(-${b.气势})`
-        });
-    } else {
-        // 50% chance to let b attack first
-        swapAttacker = roll(0.5);
-    }
+    var round = 0;
+    var roundLimit = 1000;
+    do {
+        round += 1;
+        var swapAttacker: boolean;
+        if (a.气势 > b.气势) {
+            // 20% chance to let b attack first
+            swapAttacker = roll(0.2);
+            b.斗性 = substract(b.斗性, a.气势);
+            log({
+                message: `【第${round}轮】 ${display(a)}发动气势攻击(${a.气势})，${display(b)}斗性${b.斗性}(-${a.气势})`
+            });
+        }
+        else if (a.气势 < b.气势) {
+            // 80% chance to let b attack first
+            swapAttacker = roll(0.8);
+            a.斗性 = substract(a.斗性, b.气势);
+            log({
+                message: `【第${round}轮】 ${display(b)}发动气势攻击(${b.气势})，${display(a)}斗性${a.斗性}(-${b.气势})`
+            });
+        } else {
+            // 50% chance to let b attack first
+            swapAttacker = roll(0.5);
+            log({
+                message: `【第${round}轮】 双方气势旗鼓相当`
+            });
+        }
 
-    if (checkWinner(a, b, log, display)) {
-        return isCricketLost(a) ? b : a;
-    }
+        if (checkWinner(a, b, log, display)) {
+            return isCricketLost(a) ? b : a;
+        }
 
-    if (swapAttacker) {
-        var tmp = attacker;
-        attacker = defender;
-        defender = tmp;
-    }
+        if (swapAttacker) {
+            var tmp = attacker;
+            attacker = defender;
+            defender = tmp;
+        }
+    } while (!checkRoundWinner(attacker, defender, log, display)
+    && !checkRoundWinner(defender, attacker, log, display) && round < roundLimit)
 
     var round = 1;
     var roundLimit = 1000;
-    while (!checkRoundWinner(attacker, defender, round++, false, 0, log, display)
-        && round < roundLimit) {
-        var tmp = attacker;
-        attacker = defender;
-        defender = tmp;
-    }
+    // while (!checkRoundWinner(attacker, defender, round++, false, 0, log, display)
+    //     && round < roundLimit) {
+    //     var tmp = attacker;
+    //     attacker = defender;
+    //     defender = tmp;
+    // }
 
     return isCricketLost(a) ? b : a;
 }
