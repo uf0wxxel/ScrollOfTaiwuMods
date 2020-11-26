@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using System.Xml.Linq;
 using ICSharpCode.SharpZipLib.Zip;
 using Microsoft.Build.Framework;
@@ -96,9 +97,10 @@ namespace ModPackageTask
                 using var zipFileStream = File.Create(zipFilePath);
                 using var outStream = new ZipOutputStream(zipFileStream);
 
-                foreach (var filePath in Directory.EnumerateFiles(OutputPath))
+                foreach (var filePath in Directory.EnumerateFiles(OutputPath, "*", SearchOption.AllDirectories))
                 {
-                    outStream.PutNextEntry(new ZipEntry($"{modInfo.Id}/{Path.GetFileName(filePath)}"));
+                    var relativeRootIndex = OutputPath.TrimEnd(Path.DirectorySeparatorChar).Length + 1;
+                    outStream.PutNextEntry(new ZipEntry($"{modInfo.Id}/{filePath.Substring(relativeRootIndex).Replace('\\', '/')}"));
                     using var entryFs = File.OpenRead(filePath);
                     entryFs.CopyTo(outStream);
                 }

@@ -1,0 +1,8 @@
+﻿{
+  "Id": "PrettifyActors",
+  "DisplayName": "人物美化",
+  "Author": "hanabi1224",
+  "Version": "0.0.1",
+  "AssemblyName": "PrettifyActors.dll",
+  "EntryMethod": "PrettifyActors.Main.Load"
+}

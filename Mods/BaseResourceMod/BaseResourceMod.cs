@@ -65,7 +65,6 @@ namespace BaseResourceMod
         /// <summary>index: 0. 需要载入的外部贴图文件数目；1.成功载入的外部贴图文件数目</summary>
         internal static int[] imageFilesCounter = new int[2];
 
-
         public static bool Load(UnityModManager.ModEntry modEntry)
         {
             if (!Directory.Exists(backupdir))

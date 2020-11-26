@@ -1,6 +1,6 @@
-using Harmony12;
 using System;
 using System.IO;
+using Harmony12;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -103,9 +103,6 @@ namespace BaseResourceMod
             var toload = new Texture2D(2, 2);
             toload.LoadImage(fileData);
             var newsprite = Sprite.Create(toload, new Rect(0, 0, toload.width, toload.height), new Vector2(0, 0), 100);
-#if DEBUG
-            Main.Logger.Log($"[Texture] new Texture file {path} loaded, tex size : {toload.width},{toload.height}.");
-#endif
             return newsprite;
         }
 
