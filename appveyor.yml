@@ -8,7 +8,12 @@ branches:
 environment:
     VERCEL_TOKEN:
         secure: InPNy6LbDQf4YYKZAVYpTbO0uRIKI6D3Dt+nHvOVvS8=
+cache:
+    - '%USERPROFILE%\.nuget\packages'
+    - '%USERPROFILE%\.npm'
+    - '%USERPROFILE%\.yarn'
 init:
+    - yarn config set cache-folder %USERPROFILE%\.yarn
     - ps: Install-Product node lts
     - ps: if ($env:VERCEL_TOKEN) { yarn global add vercel }
 build: off
