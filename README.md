@@ -7,7 +7,7 @@ Mod development repository for steam game scroll of taiwu.
 Once code is merged into main branch, it will automatically deploy mod packages to this [site](https://taiwumods.vercel.app/)
 
 ## Development environment setup
-* Install [.NET Framework 4.5.2 Developer Pack](https://dotnet.microsoft.com/download/dotnet-framework/net452)  ([Direct download link](https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net452-developer-pack-offline-installer))
+* Install [.NET Framework 4.7.2 Developer Pack](https://dotnet.microsoft.com/download/dotnet-framework/net472)  ([Direct download link](https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net472-developer-pack-offline-installer))
 * Install [Visual Studio 2019 Community Edition](https://visualstudio.microsoft.com/zh-hans/downloads/) (Prefered IDE, lightweight ones like VS code also works)
 * **And that is ALL. No other setup is needed, good to go now.**
 
