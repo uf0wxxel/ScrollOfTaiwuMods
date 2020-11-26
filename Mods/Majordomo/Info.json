@@ -1,0 +1,8 @@
+﻿{
+  "Id": "Majordomo",
+  "DisplayName": "太吾管家",
+  "Author": "fenghou",
+  "Version": "1.2.11",
+  "AssemblyName": "Majordomo.dll",
+  "EntryMethod": "Majordomo.Main.Load"
+}

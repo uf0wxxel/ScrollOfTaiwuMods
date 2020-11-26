@@ -43,6 +43,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaseResourceMod", "Mods\Bas
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrettifyActors", "Mods\PrettifyActors\PrettifyActors.csproj", "{F3FB0BBA-5D7A-42CF-8DBE-DE48C269716A}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Majordomo", "Mods\Majordomo\Majordomo.csproj", "{8D86EBEA-530D-40C6-B824-28208B0E7B4C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -109,6 +111,10 @@ Global
 		{F3FB0BBA-5D7A-42CF-8DBE-DE48C269716A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3FB0BBA-5D7A-42CF-8DBE-DE48C269716A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3FB0BBA-5D7A-42CF-8DBE-DE48C269716A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D86EBEA-530D-40C6-B824-28208B0E7B4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D86EBEA-530D-40C6-B824-28208B0E7B4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D86EBEA-530D-40C6-B824-28208B0E7B4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D86EBEA-530D-40C6-B824-28208B0E7B4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
