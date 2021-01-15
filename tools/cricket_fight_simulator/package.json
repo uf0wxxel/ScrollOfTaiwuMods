@@ -24,18 +24,19 @@
     "vue-virtual-scroller": "^1.0.10"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.7",
+    "@babel/core": "^7.0.0-0",
+    "@babel/preset-env": "^7.12.11",
     "@types/body-scroll-lock": "^2.6.1",
-    "@types/lodash": "^4.14.165",
-    "@typescript-eslint/eslint-plugin": "^4.8.1",
-    "@typescript-eslint/parser": "^4.8.1",
+    "@types/lodash": "^4.14.167",
+    "@typescript-eslint/eslint-plugin": "^4.13.0",
+    "@typescript-eslint/parser": "^4.13.0",
     "@vue/component-compiler-utils": "^3.2.0",
-    "eslint": "^7.14.0",
-    "eslint-plugin-prettier": "^3.1.4",
+    "eslint": "^7.17.0",
+    "eslint-plugin-prettier": "^3.3.1",
     "parcel-bundler": "^1.12.4",
-    "prettier": "^2.2.0",
-    "sass": "^1.29.0",
-    "typescript": "^4.1.2",
+    "prettier": "^2.2.1",
+    "sass": "^1.32.4",
+    "typescript": "^4.1.3",
     "vue-template-compiler": "^2.6.12"
   }
 }
