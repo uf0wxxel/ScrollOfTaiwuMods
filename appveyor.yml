@@ -1,5 +1,7 @@
 version: 1.0.{build}
-image: Visual Studio 2019
+image:
+    - Ubuntu2004
+    - Visual Studio 2019
 pull_requests:
     do_not_increment_build_number: true
 branches:
@@ -8,22 +10,37 @@ branches:
 environment:
     VERCEL_TOKEN:
         secure: InPNy6LbDQf4YYKZAVYpTbO0uRIKI6D3Dt+nHvOVvS8=
-cache:
-    - '%USERPROFILE%\.nuget\packages'
-    - '%USERPROFILE%\.npm'
-    - '%USERPROFILE%\.yarn'
-init:
-    - yarn config set cache-folder %USERPROFILE%\.yarn
-    - ps: Install-Product node lts
-    - ps: if ($env:VERCEL_TOKEN) { yarn global add vercel }
 build: off
-build_script:
-    - cmd: dotnet build -c Release /m
-    - cmd: cd %APPVEYOR_BUILD_FOLDER%\tools\cricket_fight_simulator
-    - cmd: yarn && yarn build
-    - cmd: cd %APPVEYOR_BUILD_FOLDER%
-artifacts:
-    - path: '_publish\**\*.zip'
-      name: zip
-on_success:
-    - ps: if ($env:VERCEL_TOKEN) { $a = vercel _publish --prod -c -C -t $env:VERCEL_TOKEN 2>&1 | out-null }
+for:
+    - matrix:
+          only:
+              - image: Visual Studio 2019
+      cache:
+          - '%USERPROFILE%\.nuget\packages'
+          - '%USERPROFILE%\.npm'
+          - '%USERPROFILE%\.yarn'
+          - '%USERPROFILE%\.cache\yarn'
+      build_script:
+          - dotnet build -c Release /m
+      artifacts:
+          - path: '_publish\**\*.zip'
+            name: mods
+    - matrix:
+          only:
+              - image: Ubuntu2004
+      cache:
+          - /home/appveyor/.cache/yarn/v6
+          - /home/appveyor/.npm
+          - /home/appveyor/.yarn
+      init:
+          - nvm use 14
+          - if [[ ! -z "${VERCEL_TOKEN}" ]]; then yarn global add vercel;fi
+      build_script:
+          - pushd tools/cricket_fight_simulator
+          - yarn
+          - yarn build
+          - popd
+      on_success:
+          - pushd tools/cricket_fight_simulator
+          - if [[ ! -z "${VERCEL_TOKEN}" ]]; then vercel --prod -c -C -t $VERCEL_TOKEN;fi
+          - popd

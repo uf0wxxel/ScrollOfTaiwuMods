@@ -11,8 +11,8 @@ function roll(rate: number): boolean {
     return rate > 0 && Math.random() < rate;
 }
 
-async function sleepAsync(ms) {
-    await new Promise(resolve => setTimeout(resolve, ms));
+export function sleepAsync(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 export function isCricketLost(c: ICricketBattleData): boolean {
@@ -41,8 +41,8 @@ function checkWinner(
     return false;
 }
 
-function substract(n: number, by: number, minValue: number = 0): number {
-    var result = n - by;
+function substract(n: number, by: number, minValue = 0): number {
+    const result = n - by;
     return Math.max(minValue, result);
 }
 
@@ -51,7 +51,7 @@ function substractCricketData(
     by: { hp?: number, sp?: number, durability?: number },
     log: (r: ICricketFlightLogRecord) => void,
     display: (c: ICricketData) => string) {
-    var logSuffix = '';
+    let logSuffix = '';
     if (by?.hp ?? 0 > 0) {
         c.耐力 = substract(c.耐力, by.hp!);
         logSuffix += `耐力${c.耐力}(-${by.hp!})，`;
@@ -86,8 +86,8 @@ function addInjury(
         };
     }
 
-    var injureItem = '';
-    var valueChanged = -1;
+    let injureItem = '';
+    let valueChanged = -1;
     if (roll(0.65)) {
         if (roll(0.5)) {
             c.InjuryLevel.耐力 += 1;
@@ -135,14 +135,14 @@ function getSingleAttackDamageWinner(
     const battleTypeText = `【${battleTypeTextRaw}】 `;
     const hpDamageWeapon = isHomeCounterAttack ? '角力' : '牙钳';
 
-    var possibleSpDamage = substract(attacker.气势, (attacker.InjuryLevel?.气势 ?? 0), Math.floor(attacker.气势 * 3 / 10));
-    var possiblePlierDamage = substract(attacker.牙钳, (attacker.InjuryLevel?.牙钳 ?? 0), Math.floor(attacker.牙钳 * 3 / 10));
-    var possibleWrestlingDamage = substract(attacker.角力, (attacker.InjuryLevel?.角力 ?? 0), Math.floor(attacker.角力 * 3 / 10));
-    var hpDamage = isHomeCounterAttack ? possibleWrestlingDamage : possiblePlierDamage;
+    const possibleSpDamage = substract(attacker.气势, (attacker.InjuryLevel?.气势 ?? 0), Math.floor(attacker.气势 * 3 / 10));
+    const possiblePlierDamage = substract(attacker.牙钳, (attacker.InjuryLevel?.牙钳 ?? 0), Math.floor(attacker.牙钳 * 3 / 10));
+    const possibleWrestlingDamage = substract(attacker.角力, (attacker.InjuryLevel?.角力 ?? 0), Math.floor(attacker.角力 * 3 / 10));
+    let hpDamage = isHomeCounterAttack ? possibleWrestlingDamage : possiblePlierDamage;
 
-    var spDamage = isCounterAttack ? possibleSpDamage : 0;
-    var critical = false;
-    var hurt = false;
+    let spDamage = isCounterAttack ? possibleSpDamage : 0;
+    let critical = false;
+    let hurt = false;
 
     log({ message: `${battleTypeText}${display(attacker)}发动${battleTypeTextRaw}，当前${hpDamageWeapon}伤害${hpDamage}，气势伤害${spDamage}。` });
 
@@ -154,7 +154,7 @@ function getSingleAttackDamageWinner(
         log({ message: `【暴击】 ${display(attacker)}触发暴击(${(attacker.暴击率 * 100).toFixed(0)}%)，当前${hpDamageWeapon}伤害${hpDamage}(+${attacker.暴击增伤})，气势伤害${spDamage}(+${spDamageIncrease})。` });
     }
 
-    var blocked = roll(defender.格挡概率);
+    const blocked = roll(defender.格挡概率);
     const hurtRate = attacker.暴击率 + attacker.击伤概率修正;
     if (blocked) {
         hpDamage = substract(hpDamage, defender.格挡值);
@@ -194,11 +194,11 @@ function checkRoundWinner(
     }
 
     const caRateDropBy = 0.05;
-    var counterAttackTriggeredInRound = 0;
+    let counterAttackTriggeredInRound = 0;
 
-    var caAttacker = defender;
-    var caDefender = attacker;
-    var counterAttack = roll(caAttacker.反击率 - caRateDropBy * counterAttackTriggeredInRound);
+    let caAttacker = defender;
+    let caDefender = attacker;
+    let counterAttack = roll(caAttacker.反击率 - caRateDropBy * counterAttackTriggeredInRound);
 
     while (counterAttack) {
         counterAttackTriggeredInRound += 1;
@@ -221,21 +221,21 @@ function checkRoundWinner(
 export function cricketFight(
     a: ICricketData,
     b: ICricketData,
-    log: (r: ICricketFlightLogRecord) => void = l => { },
+    log: (r: ICricketFlightLogRecord) => void = () => { },
     display: (c: ICricketData) => string = c => `${c.side}${c.name}`): ICricketData {
     if (checkWinner(a, b, log, display)) {
         return isCricketLost(a) ? b : a;
     }
 
     // Assume a attacks first
-    var attacker = a;
-    var defender = b;
+    let attacker = a;
+    let defender = b;
 
-    var round = 0;
-    var roundLimit = 1000;
+    let round = 0;
+    let roundLimit = 1000;
     do {
         round += 1;
-        var swapAttacker: boolean;
+        let swapAttacker: boolean;
         if (a.气势 > b.气势) {
             // 20% chance to let b attack first
             swapAttacker = roll(0.2);
@@ -264,15 +264,15 @@ export function cricketFight(
         }
 
         if (swapAttacker) {
-            var tmp = attacker;
+            const tmp = attacker;
             attacker = defender;
             defender = tmp;
         }
     } while (!checkRoundWinner(attacker, defender, log, display)
     && !checkRoundWinner(defender, attacker, log, display) && round < roundLimit)
 
-    var round = 1;
-    var roundLimit = 1000;
+    round = 1;
+    roundLimit = 1000;
     // while (!checkRoundWinner(attacker, defender, round++, false, 0, log, display)
     //     && round < roundLimit) {
     //     var tmp = attacker;

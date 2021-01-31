@@ -1,61 +1,63 @@
 <template>
-    <div class="ququ-card">
-        <div v-if="cricket" :class="side">
-            <div class="ququ-side">
-                {{ sideText }}
-            </div>
-            <div class="ququ-img">
-                <CricketImageComponent
-                    :className="cricket.imageUrl"
-                    :rotateDeg="rotateDeg"
-                    :size="150"
-                ></CricketImageComponent>
-            </div>
-            <div class="ququ-name">
-                {{ cricket.name }}
-            </div>
-            <!-- <div class="ququ-desc">{{ cricket.desc }}</div> -->
-            <div>
-                <a-row>
-                    <a-col :span="24"> 耐久：{{ cricket.durability }} / {{ cricketCopy.durability }} </a-col>
-                </a-row>
-                <a-row>
-                    <a-col :span="24"> 耐力：{{ cricket.耐力 }} / {{ cricketCopy.耐力 }} </a-col>
-                </a-row>
-                <a-row>
-                    <a-col :span="24"> 斗性：{{ cricket.斗性 }} / {{ cricketCopy.斗性 }} </a-col>
-                </a-row>
-                <br />
-                <a-row>
-                    <a-col :span="24"> 气势：{{ cricket.气势 }} </a-col>
-                </a-row>
-                <a-row>
-                    <a-col :span="24"> 牙钳：{{ cricket.牙钳 }} </a-col> </a-row
-                ><a-row>
-                    <a-col :span="24"> 角力：{{ cricket.角力 }} </a-col>
-                </a-row>
-                <br />
-                <a-row>
-                    <a-col :span="24"> 暴击概率：{{ cricket.暴击率 | percent }} </a-col></a-row
-                >
-                <a-row>
-                    <a-col :span="24"> 暴击增伤：{{ cricket.暴击增伤 }} </a-col>
-                </a-row>
-                <a-row>
-                    <a-col :span="24"> 格挡概率：{{ cricket.格挡概率 | percent }} </a-col></a-row
-                >
-                <a-row>
-                    <a-col :span="24"> 格挡减伤：{{ cricket.格挡值 }} </a-col>
-                </a-row>
-                <a-row>
-                    <a-col :span="24"> 反击概率：{{ cricket.反击率 | percent }} </a-col></a-row
-                >
-                <a-row>
-                    <a-col :span="24"> 击伤概率：{{ (cricket.暴击率 + cricket.击伤概率修正) | percent }} </a-col>
-                </a-row>
-            </div>
-        </div>
+  <div class="ququ-card">
+    <div 
+      v-if="cricket" 
+      :class="side">
+      <div class="ququ-side">
+        {{ sideText }}
+      </div>
+      <div class="ququ-img">
+        <CricketImageComponent
+          :className="cricket.imageUrl"
+          :rotateDeg="rotateDeg"
+          :size="150"
+        />
+      </div>
+      <div class="ququ-name">
+        {{ cricket.name }}
+      </div>
+      <!-- <div class="ququ-desc">{{ cricket.desc }}</div> -->
+      <div>
+        <a-row>
+          <a-col :span="24"> 耐久：{{ cricket.durability }} / {{ cricketCopy.durability }} </a-col>
+        </a-row>
+        <a-row>
+          <a-col :span="24"> 耐力：{{ cricket.耐力 }} / {{ cricketCopy.耐力 }} </a-col>
+        </a-row>
+        <a-row>
+          <a-col :span="24"> 斗性：{{ cricket.斗性 }} / {{ cricketCopy.斗性 }} </a-col>
+        </a-row>
+        <br >
+        <a-row>
+          <a-col :span="24"> 气势：{{ cricket.气势 }} </a-col>
+        </a-row>
+        <a-row>
+        <a-col :span="24"> 牙钳：{{ cricket.牙钳 }} </a-col> </a-row
+        ><a-row>
+          <a-col :span="24"> 角力：{{ cricket.角力 }} </a-col>
+        </a-row>
+        <br >
+        <a-row>
+        <a-col :span="24"> 暴击概率：{{ cricket.暴击率 | percent }} </a-col></a-row
+        >
+        <a-row>
+          <a-col :span="24"> 暴击增伤：{{ cricket.暴击增伤 }} </a-col>
+        </a-row>
+        <a-row>
+        <a-col :span="24"> 格挡概率：{{ cricket.格挡概率 | percent }} </a-col></a-row
+        >
+        <a-row>
+          <a-col :span="24"> 格挡减伤：{{ cricket.格挡值 }} </a-col>
+        </a-row>
+        <a-row>
+        <a-col :span="24"> 反击概率：{{ cricket.反击率 | percent }} </a-col></a-row
+        >
+        <a-row>
+          <a-col :span="24"> 击伤概率：{{ (cricket.暴击率 + cricket.击伤概率修正) | percent }} </a-col>
+        </a-row>
+      </div>
     </div>
+  </div>
 </template>
 
 <script lang="ts">

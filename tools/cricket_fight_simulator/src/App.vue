@@ -1,148 +1,203 @@
 <template>
-    <div class="main" v-drag-and-drop:options="dragDropOptions">
-        <div class="left">
-            <div class="container">
-                <div class="search-box">
-                    <a-input placeholder="查找促织" v-model.lazy="filterText"></a-input>
-                    <div class="note">从列表拖动至右方图标更换促织</div>
-                </div>
-                <div class="ququ-list">
-                    <a-list item-layout="horizontal" :data-source="displayCricketData" :rowKey="(c) => c.name">
-                        <a-list-item slot="renderItem" slot-scope="item, index" class="ququ-list-item">
-                            <a-list-item-meta>
-                                <div slot="description" class="desc">
-                                    <!-- <CricketToolTipComponent :cricket="item"> -->
-                                        <a-popover trigger="click" :title="item.name">
-                                            <div slot="content">
-                                                <a-button type="danger" @click="setCricketHome(item)">
-                                                    设置为红方
-                                                </a-button>
-                                                <a-button type="primary" @click="setCricketAway(item)">
-                                                    设置为蓝方
-                                                </a-button>
-                                            </div>
-                                            <div>
-                                                {{ item.name }}
-                                            </div>
-                                        </a-popover>                                        
-                                    <!-- </CricketToolTipComponent> -->
-                                </div>
-                                <CricketToolTipComponent slot="avatar" :cricket="item">
-                                    <CricketImageComponent :className="item.imageUrl" :size="50"></CricketImageComponent>
-                                </CricketToolTipComponent>                                
-                            </a-list-item-meta>
-                        </a-list-item>
-                    </a-list>
-                </div>
-            </div>
+  <div 
+    v-drag-and-drop:options="dragDropOptions" 
+    class="main">
+    <div class="left">
+      <div class="container">
+        <div class="search-box">
+          <a-input 
+            v-model.lazy="filterText" 
+            placeholder="查找促织" />
+          <div class="note">从列表拖动至右方图标更换促织</div>
         </div>
-        <div class="middle">
-            <div class="container">
-                <div class="ququ-box home">
-                    <CricketCardComponent
-                        v-if="cricketHome"
-                        :cricket="cricketHome"
-                        side="red"
-                        :refreshToken="refreshTokenHome"
-                    ></CricketCardComponent>
-                    <div v-if="!cricketHome" class="drop-box">从左边列表拖动促织至此区域</div>
-                </div>
-                <div>
-                    <div class="button-box">
-                    <a-button type="primary" :disabled="isFightButtonDisabled" @click="doFight">模拟决斗</a-button>
-                    <br />
-                    <a-button type="dashed" :disabled="isFightButtonDisabled" @click="doFightBatch(1000)"
-                        >模拟1000场决斗</a-button
-                    >
-                    <br />
-                    <a-button type="dashed" :disabled="isFightButtonDisabled" @click="doFightBatch(10000)"
-                        >模拟10000场决斗</a-button
-                    >
-                    <br />
-                    <a-button-group>
-                        <a-popconfirm
-                            ok-text="确定"
-                            cancel-text="取消"
-                            @confirm="onFindRivalsConfirm(true)"
-                        >
-                        <template slot="title">
-                            <div style="max-width:20vw;">
-                                搜索品级与类型
-                                <br />
-                                <!-- <a-checkbox v-model="findRivalOptionCheckBaBai" style="color:red;">八败(容易卡死慎选)</a-checkbox> -->
-                        <a-checkbox-group v-model="findRivalFilters" :options="findRivalOptions" :defaultValue="findRivalOptionsDefault"></a-checkbox-group>
-                        <a-checkbox v-model="searchMomentum">气势型</a-checkbox>
-                        <a-checkbox v-model="searchPlier">牙钳型</a-checkbox>
-                        <a-checkbox v-model="searchWresling">角力型</a-checkbox>
-                        <a-checkbox v-model="searchAverage">均衡型</a-checkbox>
-                        </div></template>
-                            <a-button type="danger" :disabled="isFightButtonDisabled">找克星</a-button>
-                        </a-popconfirm>
-                        <a-popconfirm
-                            ok-text="确定"
-                            cancel-text="取消"
-                            @confirm="onFindRivalsConfirm(false)"
-                        >
-                        <template slot="title">
-                            <div style="max-width:20vw;">
-                                搜索品级与类型
-                                <br />
-                                <!-- <a-checkbox v-model="findRivalOptionCheckBaBai" style="color:red;">八败(容易卡死慎选)</a-checkbox> -->
-                        <a-checkbox-group v-model="findRivalFilters" :options="findRivalOptions" :defaultValue="findRivalOptionsDefault"></a-checkbox-group>
-                        <a-checkbox v-model="searchMomentum">气势型</a-checkbox>
-                        <a-checkbox v-model="searchPlier">牙钳型</a-checkbox>
-                        <a-checkbox v-model="searchWresling">角力型</a-checkbox>
-                        <a-checkbox v-model="searchAverage">均衡型</a-checkbox>
-                        </div></template>
-                            <a-button type="primary" :disabled="isFightButtonDisabled">找克星</a-button>
-                        </a-popconfirm>
-                    </a-button-group>
-                    <br />
-                    <a-button type="default" :disabled="isFightButtonDisabled" @click="restoreCricketStatus"
-                        >还原促织状态</a-button
-                    >
+        <div class="ququ-list">
+          <a-list 
+            :data-source="displayCricketData" 
+            :rowKey="(c) => c.name" 
+            item-layout="horizontal">
+            <a-list-item 
+              slot-scope="item" 
+              slot="renderItem" 
+              class="ququ-list-item">
+              <a-list-item-meta>
+                <div 
+                  slot="description" 
+                  class="desc">
+                  <!-- <CricketToolTipComponent :cricket="item"> -->
+                  <a-popover 
+                    :title="item.name" 
+                    trigger="click">
+                    <div slot="content">
+                      <a-button 
+                        @click="setCricketHome(item)" 
+                        type="danger">
+                        设置为红方
+                      </a-button>
+                      <a-button 
+                        @click="setCricketAway(item)" 
+                        type="primary">
+                        设置为蓝方
+                      </a-button>
                     </div>
-                    <div class="battle-result">
-                        <div class="score-board">
-                        <span class="red">{{ scoreHome }}</span> : <span class="blue">{{ scoreAway }}</div></span>
+                    <div>
+                      {{ item.name }}
                     </div>
+                  </a-popover>
+                  <!-- </CricketToolTipComponent> -->
                 </div>
-                <div class="ququ-box away">
-                    <CricketCardComponent
-                        v-if="cricketAway"
-                        :cricket="cricketAway"
-                        side="blue"
-                        :refreshToken="refreshTokenAway"
-                    ></CricketCardComponent>
-                    <div v-if="!cricketAway" class="drop-box">从左边列表拖动促织至此区域</div>
-                </div>
-            </div>
+                <CricketToolTipComponent 
+                  :cricket="item" 
+                  slot="avatar">
+                  <CricketImageComponent 
+                    :className="item.imageUrl" 
+                    :size="50" />
+                </CricketToolTipComponent>
+              </a-list-item-meta>
+            </a-list-item>
+          </a-list>
         </div>
-        <div class="right">
-            <div class="container scroll">
-                <a-divider>战斗过程记录</a-divider>
-                <!-- <a-divider></a-divider> -->
-                <a-timeline>
-                    <a-timeline-item v-for="(round, idx1) in gameRecords" :key="idx1">
-                        <p v-for="(item, idx2) in round" v-html="item.message" :key="idx2"></p>
-                    </a-timeline-item>
-                </a-timeline>
-            </div>
-        </div>
+      </div>
     </div>
+    <div class="middle">
+      <div class="container">
+        <div class="ququ-box home">
+          <CricketCardComponent
+            v-if="cricketHome"
+            :cricket="cricketHome"
+            :refreshToken="refreshTokenHome"
+            side="red"
+          />
+          <div 
+            v-if="!cricketHome" 
+            class="drop-box">从左边列表拖动促织至此区域</div>
+        </div>
+        <div>
+          <div class="button-box">
+            <a-button 
+              :disabled="isFightButtonDisabled" 
+              @click="doFight" 
+              type="primary">模拟决斗</a-button>
+            <br >
+            <a-button 
+              :disabled="isFightButtonDisabled" 
+              @click="doFightBatch(1000)" 
+              type="dashed"
+            >模拟1000场决斗</a-button
+            >
+            <br >
+            <a-button 
+              :disabled="isFightButtonDisabled" 
+              @click="doFightBatch(10000)" 
+              type="dashed"
+            >模拟10000场决斗</a-button
+            >
+            <br >
+            <a-button-group>
+              <a-popconfirm 
+                @confirm="onFindRivalsConfirm(true)" 
+                ok-text="确定" 
+                cancel-text="取消">
+                <template slot="title">
+                  <div style="max-width: 20vw">
+                    搜索品级与类型
+                    <br >
+                    <!-- <a-checkbox v-model="findRivalOptionCheckBaBai" style="color:red;">八败(容易卡死慎选)</a-checkbox> -->
+                    <a-checkbox-group
+                      v-model="findRivalFilters"
+                      :options="findRivalOptions"
+                      :defaultValue="findRivalOptionsDefault"
+                    />
+                    <a-checkbox v-model="searchMomentum">气势型</a-checkbox>
+                    <a-checkbox v-model="searchPlier">牙钳型</a-checkbox>
+                    <a-checkbox v-model="searchWresling">角力型</a-checkbox>
+                    <a-checkbox v-model="searchAverage">均衡型</a-checkbox>
+                </div></template
+                >
+                <a-button 
+                  :disabled="isFightButtonDisabled" 
+                  type="danger">找克星</a-button>
+              </a-popconfirm>
+              <a-popconfirm 
+                @confirm="onFindRivalsConfirm(false)" 
+                ok-text="确定" 
+                cancel-text="取消">
+                <template slot="title">
+                  <div style="max-width: 20vw">
+                    搜索品级与类型
+                    <br >
+                    <!-- <a-checkbox v-model="findRivalOptionCheckBaBai" style="color:red;">八败(容易卡死慎选)</a-checkbox> -->
+                    <a-checkbox-group
+                      v-model="findRivalFilters"
+                      :options="findRivalOptions"
+                      :defaultValue="findRivalOptionsDefault"
+                    />
+                    <a-checkbox v-model="searchMomentum">气势型</a-checkbox>
+                    <a-checkbox v-model="searchPlier">牙钳型</a-checkbox>
+                    <a-checkbox v-model="searchWresling">角力型</a-checkbox>
+                    <a-checkbox v-model="searchAverage">均衡型</a-checkbox>
+                </div></template
+                >
+                <a-button 
+                  :disabled="isFightButtonDisabled" 
+                  type="primary">找克星</a-button>
+              </a-popconfirm>
+            </a-button-group>
+            <br >
+            <a-button 
+              :disabled="isFightButtonDisabled" 
+              @click="restoreCricketStatus" 
+              type="default"
+            >还原促织状态</a-button
+            >
+          </div>
+          <div class="battle-result">
+            <div class="score-board">
+              <span class="red">{{ scoreHome }}</span> : <span class="blue">{{ scoreAway }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="ququ-box away">
+          <CricketCardComponent
+            v-if="cricketAway"
+            :cricket="cricketAway"
+            :refreshToken="refreshTokenAway"
+            side="blue"
+          />
+          <div 
+            v-if="!cricketAway" 
+            class="drop-box">从左边列表拖动促织至此区域</div>
+        </div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="container scroll">
+        <a-divider>战斗过程记录</a-divider>
+        <!-- <a-divider></a-divider> -->
+        <a-timeline>
+          <a-timeline-item 
+            v-for="(round, idx1) in gameRecords" 
+            :key="idx1">
+            <p 
+              v-for="(item, idx2) in round" 
+              v-html="item.message" 
+              :key="idx2" />
+          </a-timeline-item>
+        </a-timeline>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { cricketParts, cricketCollection, ICricketData } from './utils/cricket_data_utils';
-import { cricketFight, ICricketFlightLogRecord, isCricketLost } from './utils/cricket_fight_engine';
+import { cricketCollection, ICricketData } from './utils/cricket_data_utils';
+import { cricketFight, ICricketFlightLogRecord } from './utils/cricket_fight_engine';
 import { clone } from './utils/utils';
 import CricketCardComponent from './components/CricketCard.vue';
 import CricketToolTipComponent from './components/CricketToolTip.vue';
 import CricketImageComponent from './components/CricketImage.vue';
 import { VueDraggableEvent, VueDraggableOptions } from 'vue-draggable/types/vue-draggable-options';
 import * as _ from 'lodash';
-import { IformCreateOption } from 'ant-design-vue/types/form/form';
 
 @Component({
     components: { CricketCardComponent, CricketToolTipComponent, CricketImageComponent },
@@ -170,7 +225,7 @@ export default class CricketSimulatorPage extends Vue {
         this.cricketAway = clone(this.cricketAwayCopy);
     }
 
-    doFightBatch(count: number = 1000) {
+    doFightBatch(count = 1000) {
         if (this.isFightButtonDisabled) {
             return;
         }
@@ -367,10 +422,10 @@ export default class CricketSimulatorPage extends Vue {
 
     findRivals(
         c: ICricketData,
-        searchMomentum: boolean = true,
-        searchPlier: boolean = true,
-        searchWresling: boolean = true,
-        searchAverage: boolean = true,
+        searchMomentum = true,
+        searchPlier = true,
+        searchWresling = true,
+        searchAverage = true,
         levelFilters: number[] = [],
     ) {
         const levelGroups = _.chain(cricketCollection)
@@ -435,13 +490,13 @@ export default class CricketSimulatorPage extends Vue {
         { label: '副尉', value: 2 },
         { label: '小卒', value: 1 },
     ];
-    searchMomentum: boolean = true;
-    searchPlier: boolean = true;
-    searchWresling: boolean = true;
-    searchAverage: boolean = true;
+    searchMomentum = true;
+    searchPlier = true;
+    searchWresling = true;
+    searchAverage = true;
     // findRivalOptionCheckBaBai = false;
 
-    onFindRivalsConfirm(isHome: Boolean) {
+    onFindRivalsConfirm(isHome: boolean) {
         this.gameRecords.splice(0);
         this.restoreCricketStatus();
         this.scoreHome = this.scoreAway = 0;

@@ -1,7 +1,7 @@
 import cricketPartDataRaw from './../assets/cricketDate.json';
 import * as _ from 'lodash';
 
-import cricketImages from './../assets/images/crickets/*.webp';
+// import cricketImages from './../assets/images/crickets/*.webp';
 
 export interface ICricketBattleData {
     durability: number,
@@ -90,7 +90,7 @@ function parseCricketPart(id: number, dict: { string: string }): ICricketPartDat
 }
 
 function parseCricketParts(): ICricketPartData[] {
-    var results: ICricketPartData[] = [];
+    const results: ICricketPartData[] = [];
     const cricketPartDataRawTyped = cricketPartDataRaw as unknown as { string: { string: string } };
     for (const id in cricketPartDataRawTyped) {
         results.push(parseCricketPart(parseInt(id), cricketPartDataRawTyped[id]));
@@ -100,7 +100,7 @@ function parseCricketParts(): ICricketPartData[] {
 }
 
 function generateCricketCollection(): ICricketData[] {
-    var kings: ICricketData[] = _.chain(cricketParts)
+    const kings: ICricketData[] = _.chain(cricketParts)
         .filter(p => !p.isColorPart && !p.isBodyPart)
         .map(function (p) {
             return {
@@ -125,12 +125,12 @@ function generateCricketCollection(): ICricketData[] {
         })
         .value();
 
-    var colorParts = _.chain(cricketParts).filter(p => p.isColorPart).orderBy(p => p.level, 'desc').value();
-    var bodyParts = _.chain(cricketParts).filter(p => p.isBodyPart).orderBy(p => p.level, 'desc').value();
+    const colorParts = _.chain(cricketParts).filter(p => p.isColorPart).orderBy(p => p.level, 'desc').value();
+    const bodyParts = _.chain(cricketParts).filter(p => p.isBodyPart).orderBy(p => p.level, 'desc').value();
 
     const results = kings;
-    for (var i = 0; i < colorParts.length; i++) {
-        for (var j = 0; j < bodyParts.length; j++) {
+    for (let i = 0; i < colorParts.length; i++) {
+        for (let j = 0; j < bodyParts.length; j++) {
             const colorPart = colorParts[i];
             const bodyPart = bodyParts[j];
             // if (colorPart.level > bodyPart.level) {

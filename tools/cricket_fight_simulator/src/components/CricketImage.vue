@@ -1,7 +1,9 @@
 <template>
-    <div :style="styles">
-        <img src="./../assets/images/0.gif" :class="imageClass" />
-    </div>
+  <div :style="styles">
+    <img 
+      :class="imageClass" 
+      src="./../assets/images/0.gif" >
+  </div>
 </template>
 
 <script lang="ts">
