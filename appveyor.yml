@@ -34,6 +34,7 @@ for:
           - /home/appveyor/.yarn
       init:
           - nvm use 14
+          - export PATH="$(yarn global bin):$PATH"
           - if [[ ! -z "${VERCEL_TOKEN}" ]]; then yarn global add vercel;fi
       build_script:
           - pushd tools/cricket_fight_simulator
