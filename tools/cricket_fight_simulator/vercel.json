@@ -5,12 +5,6 @@
             "VUE_APP_NOW_BUILD": "true"
         }
     },
-    "builds": [
-        {
-            "src": "package.json",
-            "use": "@vercel/static-build"
-        }
-    ],
     "routes": [
         {
             "src": "^/.*",
