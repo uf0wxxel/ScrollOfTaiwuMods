@@ -24,7 +24,7 @@
     "vue-virtual-scroller": "^1.0.10"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.10",
+    "@babel/core": "^7.12.16",
     "@babel/preset-env": "^7.12.11",
     "@types/body-scroll-lock": "^2.6.1",
     "@types/lodash": "^4.14.168",
