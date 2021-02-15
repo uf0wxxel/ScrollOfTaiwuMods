@@ -239,18 +239,23 @@ namespace BossGongfaFixEnhance
                     }
                 }
             }
-            if (index < 3) {
+            if (index < 1) {
                 return instructions;
             }
             CodeInstruction copy1 = codes[index].Clone();
-            CodeInstruction copy3 = codes[index - 3].Clone();
+            CodeInstruction copy3 = null;
+            for (i = index - 2; i >= 0; i--) {
+                if (codes[i].opcode == OpCodes.Ldfld) {
+                    copy3 = codes[i].Clone();
+                }
+            }
             CodeInstruction copy2 = null;
             for (i = index + 2; i < codes.Count; i++) {
                 if (codes[i].opcode == OpCodes.Ldfld) {
                     copy2 = codes[i].Clone();
                 }
             }
-            if (copy2 == null) {
+            if (copy2 == null || copy3 == null) {
                 return instructions;
             }
             for (index = -1, i = 0; i < codes.Count; i++) {
@@ -278,9 +283,9 @@ namespace BossGongfaFixEnhance
             var toInsert = new List<CodeInstruction>(5);
             toInsert.Add(new CodeInstruction(OpCodes.Ldloc_0));
             toInsert.Add(copy3.Clone());
-            toInsert.Add(new CodeInstruction(OpCodes.Brfalse_S, l1));
+            toInsert.Add(new CodeInstruction(OpCodes.Brfalse, l1));
             toInsert.Add(copy1.Clone());
-            toInsert.Add(new CodeInstruction(OpCodes.Br_S, l2));
+            toInsert.Add(new CodeInstruction(OpCodes.Br, l2));
             codes.InsertRange(index, toInsert);
             for (index = -1, i += 7; i < codes.Count; i++) {
                 if (codes[i].opcode == OpCodes.Ldfld && codes[i].operand == copy2.operand) {
@@ -291,16 +296,16 @@ namespace BossGongfaFixEnhance
             if (index < 0) {
                 return instructions;
             }
-            l1 = generator.DefineLabel();
-            l2 = generator.DefineLabel();
-            codes[index].labels.Add(l1);
-            codes[index + 1].labels.Add(l2);
+            Label l3 = generator.DefineLabel();
+            Label l4 = generator.DefineLabel();
+            codes[index].labels.Add(l3);
+            codes[index + 1].labels.Add(l4);
             toInsert = new List<CodeInstruction>(5);
             toInsert.Add(new CodeInstruction(OpCodes.Ldloc_0));
             toInsert.Add(copy3.Clone());
-            toInsert.Add(new CodeInstruction(OpCodes.Brfalse_S, l1));
+            toInsert.Add(new CodeInstruction(OpCodes.Brfalse, l3));
             toInsert.Add(copy1.Clone());
-            toInsert.Add(new CodeInstruction(OpCodes.Br_S, l2));
+            toInsert.Add(new CodeInstruction(OpCodes.Br, l4));
             codes.InsertRange(index, toInsert);
             Main.Logger.Log("BattleSystem_UseGongFa_Patch success");
             return codes.AsEnumerable();
