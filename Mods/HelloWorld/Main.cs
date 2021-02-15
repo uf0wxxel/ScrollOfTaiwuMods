@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Collections.Generic;
+using System.Linq;
 using Harmony12;
 using UnityEngine;
 using UnityModManagerNet;
@@ -64,7 +65,7 @@ namespace BossGongfaFixEnhance
             var endIndex = -1;
             for (; i < codes.Count; i++) {
                 if (codes[i].opcode == OpCodes.Ldc_I4) {
-                    var val = codes[i].operand as int;
+                    var val = codes[i].operand;
                     if (val == 0x7534) {
                         startIndex = i - 1;
                         break;
@@ -73,7 +74,7 @@ namespace BossGongfaFixEnhance
             }
             for (; i < codes.Count; i++) {
                 if (codes[i].opcode == OpCodes.Ldc_I4) {
-                    var val = codes[i].operand as int;
+                    var val = codes[i].operand;
                     if (val == 0x7534) {
                         break;
                     }
@@ -94,7 +95,7 @@ namespace BossGongfaFixEnhance
                 return instructions;
             }
             var modified = codes.GetRange(startIndex, endIndex - startIndex);
-            var inst1, inst2;
+            int inst1, inst2;
             i = 0;
             for (; i < modified.Count; i++) {
                 if (modified[i].opcode == OpCodes.Ldfld) {
@@ -124,13 +125,13 @@ namespace BossGongfaFixEnhance
             i = 0;
             for (; i < modified.Count; i++) {
                 if (modified[i].opcode == OpCodes.Ldc_I4) {
-                    var val = modified[i].operand as int;
+                    var val = modified[i].operand;
                     if (val == 0x7534) {
                         modified[i].operand = 0x9c44;
                     }
                 }
             }
-            codes[i].InsertRange(endIndex, modified);
+            codes.InsertRange(endIndex, modified);
             return codes.AsEnumerable();
         }
     }
@@ -146,7 +147,7 @@ namespace BossGongfaFixEnhance
             var index = -1;
             for (; i < codes.Count; i++) {
                 if (codes[i].opcode == OpCodes.Ldc_I4) {
-                    var val = codes[i].operand as int;
+                    var val = codes[i].operand;
                     if (val == 0x7534) {
                         index = i;
                         break;
