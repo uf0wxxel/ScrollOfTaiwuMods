@@ -65,7 +65,7 @@ namespace BossGongfaFixEnhance
             var endIndex = -1;
             for (; i < codes.Count; i++) {
                 if (codes[i].opcode == OpCodes.Ldc_I4) {
-                    int val = codes[i].operand;
+                    int val = (int)codes[i].operand;
                     if (val == 0x7534) {
                         startIndex = i - 1;
                         break;
@@ -74,7 +74,7 @@ namespace BossGongfaFixEnhance
             }
             for (; i < codes.Count; i++) {
                 if (codes[i].opcode == OpCodes.Ldc_I4) {
-                    int val = codes[i].operand;
+                    int val = (int)codes[i].operand;
                     if (val == 0x7534) {
                         break;
                     }
@@ -127,7 +127,7 @@ namespace BossGongfaFixEnhance
             i = 0;
             for (; i < modified.Count; i++) {
                 if (modified[i].opcode == OpCodes.Ldc_I4) {
-                    int val = modified[i].operand;
+                    int val = (int)modified[i].operand;
                     if (val == 0x7534) {
                         modified[i].operand = 0x9c44;
                     }
@@ -149,7 +149,7 @@ namespace BossGongfaFixEnhance
             var index = -1;
             for (; i < codes.Count; i++) {
                 if (codes[i].opcode == OpCodes.Ldc_I4) {
-                    int val = codes[i].operand;
+                    int val = (int)codes[i].operand;
                     if (val == 0x7534) {
                         index = i;
                         break;
