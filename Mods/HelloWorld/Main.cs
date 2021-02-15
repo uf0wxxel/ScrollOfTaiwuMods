@@ -13,16 +13,12 @@ namespace BossGongfaFixEnhance
     public static class Main
     {
         public static UnityModManager.ModEntry Mod { get; private set; }
-        public static Settings Settings { get; private set; }
         public static UnityModManager.ModEntry.ModLogger Logger => Mod?.Logger;
-
-        public static bool Enabled { get; private set; }
 
         public static bool Load(UnityModManager.ModEntry modEntry)
         {
             Mod = modEntry;
             HarmonyInstance.Create(Mod.Info.Id).PatchAll(Assembly.GetExecutingAssembly());
-            Settings = UnityModManager.ModSettings.Load<Settings>(Mod);
 
             Mod.OnGUI = OnGUI;
             Mod.OnToggle = OnToggle;
@@ -37,19 +33,16 @@ namespace BossGongfaFixEnhance
 
             GUILayout.BeginVertical("Box", (GUILayoutOption[])(object)new GUILayoutOption[0]);
             GUILayout.Label($"已测试的游戏版本:0.2.8.4, 当前游戏版本:{gameVersionText}");
-            GUILayout.Label($"当前MOD已激活:{(Enabled ? "是" : "否")}");
             GUILayout.EndVertical();
         }
 
         public static bool OnToggle(UnityModManager.ModEntry modEntry, bool value)
         {
-            Enabled = value;
             return true;
         }
 
         private static void OnSaveGUI(UnityModManager.ModEntry modEntry)
         {
-            Settings.Save(modEntry);
         }
     }
 
@@ -58,7 +51,6 @@ namespace BossGongfaFixEnhance
     {
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            if (!Main.Enabled) return instructions;
             Main.Logger.Log("BattleSystem_SetDamage_Patch start");
             var codes = new List<CodeInstruction>(instructions);
             var i = 0;
@@ -146,7 +138,6 @@ namespace BossGongfaFixEnhance
     {
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            if (!Main.Enabled) return instructions;
             Main.Logger.Log("BattleSystem_AutoSetDefGongFa_Patch start");
             var codes = new List<CodeInstruction>(instructions);
             var i = 0;
