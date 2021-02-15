@@ -53,18 +53,18 @@ namespace BossGongfaFixEnhance
     [HarmonyPatch(typeof(BattleSystem), "SetDamage")]
     class BattleSystem_SetDamage_Patch
     {
-        static bool Prefix(bool isActor, int damageTyp, int injuryId, int injuryPower, int deferKey, int attackerKey, float damageMassageSize, bool canDefttack = true, bool getWin = true, bool canTransfer = false, bool directDamage = true)
+        static bool Prefix(BattleSystem __instance, bool isActor, int damageTyp, int injuryId, int injuryPower, int deferKey, int attackerKey, float damageMassageSize, bool canDefttack = true, bool getWin = true, bool canTransfer = false, bool directDamage = true)
         {
             if (!Main.enabled) return true;
-            bool gongFaFEffect = this.GetGongFaFEffect(40004, isActor, deferKey, 0);
+            bool gongFaFEffect = __instance.GetGongFaFEffect(40004, isActor, deferKey, 0);
             if (gongFaFEffect && isActor)
             {
-                bool flag = this.actorGongFaSp[deferKey][0] >= this.enemyGongFaSp[attackerKey][0] * 2 && this.actorGongFaSp[deferKey][1] >= this.enemyGongFaSp[attackerKey][1] * 2 && this.actorGongFaSp[deferKey][2] >= this.enemyGongFaSp[attackerKey][2] * 2 && this.actorGongFaSp[deferKey][3] >= this.enemyGongFaSp[attackerKey][3] * 2;
+                bool flag = __instance.actorGongFaSp[deferKey][0] >= __instance.enemyGongFaSp[attackerKey][0] * 2 && __instance.actorGongFaSp[deferKey][1] >= __instance.enemyGongFaSp[attackerKey][1] * 2 && __instance.actorGongFaSp[deferKey][2] >= __instance.enemyGongFaSp[attackerKey][2] * 2 && __instance.actorGongFaSp[deferKey][3] >= __instance.enemyGongFaSp[attackerKey][3] * 2;
                 if (flag)
                 {
-                    this.ShowBattleState(40004, isActor, 0);
+                    __instance.ShowBattleState(40004, isActor, 0);
                     injuryPower = 0;
-                    base.StartCoroutine(this.UpdateDamageText(isActor, 0, DateFile.instance.SetColoer(20002, "0", false), this.smallSize, true));
+                    base.StartCoroutine(__instance.UpdateDamageText(isActor, 0, DateFile.instance.SetColoer(20002, "0", false), __instance.smallSize, true));
                     return false;
                 }
             }
@@ -75,40 +75,40 @@ namespace BossGongfaFixEnhance
     [HarmonyPatch(typeof(BattleSystem), "AutoSetDefGongFa")]
     class BattleSystem_AutoSetDefGongFa_Patch
     {
-        static bool Prefix(bool isActor)
+        static bool Prefix(BattleSystem __instance, bool isActor)
         {
-            int num2 = this.ActorId(!isActor, false);
-            bool gongFaFEffect = this.GetGongFaFEffect(30004, isActor, num, 0);
+            int num2 = __instance.ActorId(!isActor, false);
+            bool gongFaFEffect = __instance.GetGongFaFEffect(30004, isActor, num, 0);
             if (gongFaFEffect)
             {
-                this.ShowBattleState(30004, isActor, 0);
+                __instance.ShowBattleState(30004, isActor, 0);
                 List<int> list = new List<int>();
                 for (int i = 0; i < 4; i++)
                 {
-                    bool flag = this.enemyGongFaSp[num][i] < this.actorGongFaSp[num2][i] * 2;
+                    bool flag = __instance.enemyGongFaSp[num][i] < __instance.actorGongFaSp[num2][i] * 2;
                     if (flag)
                     {
                         list.Add(i);
                     }
                 }
-                this.ChangeActorSp(isActor, (list.Count > 0) ? list[Random.Range(0, list.Count)] : -1, Random.Range(1, 4));
+                __instance.ChangeActorSp(isActor, (list.Count > 0) ? list[Random.Range(0, list.Count)] : -1, Random.Range(1, 4));
             }
-            bool gongFaFEffect2 = this.GetGongFaFEffect(40004, isActor, num, 0);
+            bool gongFaFEffect2 = __instance.GetGongFaFEffect(40004, isActor, num, 0);
             if (gongFaFEffect2)
             {
-                this.ShowBattleState(40004, isActor, 0);
+                __instance.ShowBattleState(40004, isActor, 0);
                 List<int> list2 = new List<int>();
                 for (int j = 0; j < 4; j++)
                 {
-                    bool flag2 = this.actorGongFaSp[num][j] < this.enemyGongFaSp[num2][j] * 2;
+                    bool flag2 = __instance.actorGongFaSp[num][j] < __instance.enemyGongFaSp[num2][j] * 2;
                     if (flag2)
                     {
                         list2.Add(j);
                     }
                 }
-                this.ChangeActorSp(isActor, (list2.Count > 0) ? list2[Random.Range(0, list2.Count)] : -1, Random.Range(1, 4));
+                __instance.ChangeActorSp(isActor, (list2.Count > 0) ? list2[Random.Range(0, list2.Count)] : -1, Random.Range(1, 4));
             }
-            int num3 = this.NowDefEffectId(isActor, num);
+            int num3 = __instance.NowDefEffectId(isActor, num);
             bool flag3 = num3 != 0;
             if (flag3)
             {
@@ -119,20 +119,20 @@ namespace BossGongfaFixEnhance
                     {
                         if (num4 == 318)
                         {
-                            bool gongFaDefEffect = this.GetGongFaDefEffect(num3, isActor, num, 0);
+                            bool gongFaDefEffect = __instance.GetGongFaDefEffect(num3, isActor, num, 0);
                             if (gongFaDefEffect)
                             {
-                                int num5 = isActor ? this.actorGongFaSp[num][0] : this.enemyGongFaSp[num][0];
-                                this.SetPoisonDamage(!isActor, num2, 3, Random.Range(10, 40) + num5 * 3, true);
+                                int num5 = isActor ? __instance.actorGongFaSp[num][0] : __instance.enemyGongFaSp[num][0];
+                                __instance.SetPoisonDamage(!isActor, num2, 3, Random.Range(10, 40) + num5 * 3, true);
                             }
                         }
                     }
                     else
                     {
-                        bool gongFaDefEffect2 = this.GetGongFaDefEffect(num3, isActor, num, 0);
+                        bool gongFaDefEffect2 = __instance.GetGongFaDefEffect(num3, isActor, num, 0);
                         if (gongFaDefEffect2)
                         {
-                            this.DoHeal(isActor, 50, false, true, -1);
+                            __instance.DoHeal(isActor, 50, false, true, -1);
                         }
                     }
                 }
@@ -140,23 +140,23 @@ namespace BossGongfaFixEnhance
                 {
                     if (num4 == 5318)
                     {
-                        bool gongFaDefEffect3 = this.GetGongFaDefEffect(num3, isActor, num, 0);
+                        bool gongFaDefEffect3 = __instance.GetGongFaDefEffect(num3, isActor, num, 0);
                         if (gongFaDefEffect3)
                         {
-                            int num6 = isActor ? this.actorGongFaSp[num][0] : this.enemyGongFaSp[num][0];
-                            this.SetPoisonDamage(!isActor, num2, 1, Random.Range(10, 40) + num6 * 3, true);
+                            int num6 = isActor ? __instance.actorGongFaSp[num][0] : __instance.enemyGongFaSp[num][0];
+                            __instance.SetPoisonDamage(!isActor, num2, 1, Random.Range(10, 40) + num6 * 3, true);
                         }
                     }
                 }
                 else
                 {
-                    bool gongFaDefEffect4 = this.GetGongFaDefEffect(num3, isActor, num, 0);
+                    bool gongFaDefEffect4 = __instance.GetGongFaDefEffect(num3, isActor, num, 0);
                     if (gongFaDefEffect4)
                     {
                         List<int> list3 = new List<int>(DateFile.instance.battleActorsInjurys[num2].Keys);
                         foreach (int injuryId in list3)
                         {
-                            this.WorsenInjury(num2, injuryId, 50, false, true);
+                            __instance.WorsenInjury(num2, injuryId, 50, false, true);
                         }
                     }
                 }
@@ -168,17 +168,17 @@ namespace BossGongfaFixEnhance
     [HarmonyPatch(typeof(BattleSystem), "UseGongFa")]
     class BattleSystem_UseGongFa_Patch
     {
-        static bool Prefix(bool isActor, int gongFaId, bool noPrepare = false)
+        static bool Prefix(BattleSystem __instance, bool isActor, int gongFaId, bool noPrepare = false)
         {
-            this.StopGongFaTime(true);
+            __instance.StopGongFaTime(true);
             int num = 0;
-            int num2 = this.ActorId(isActor, false);
-            int num3 = this.ActorId(!isActor, true);
+            int num2 = __instance.ActorId(isActor, false);
+            int num3 = __instance.ActorId(!isActor, true);
             int num4 = int.Parse(DateFile.instance.gongFaDate[gongFaId][2]);
             int combatSkillDataInt = DateFile.GetCombatSkillDataInt(gongFaId, 7, num2, true);
             if (noPrepare)
             {
-                bool flag = !(isActor ? this._actorNextImmediateGongfaNotShowName : this._enemyNextImmediateGongfaNotShowName);
+                bool flag = !(isActor ? __instance._actorNextImmediateGongfaNotShowName : __instance._enemyNextImmediateGongfaNotShowName);
                 if (flag)
                 {
                     Image[] array = isActor ? BattleSystem.instance.actorUseGongFaTimeBar : BattleSystem.instance.enemyUseGongFaTimeBar;
@@ -191,11 +191,11 @@ namespace BossGongfaFixEnhance
                     bool isActor2 = isActor;
                     if (isActor2)
                     {
-                        this._actorNextImmediateGongfaNotShowName = false;
+                        __instance._actorNextImmediateGongfaNotShowName = false;
                     }
                     else
                     {
-                        this._enemyNextImmediateGongfaNotShowName = false;
+                        __instance._enemyNextImmediateGongfaNotShowName = false;
                     }
                 }
             }
@@ -224,8 +224,8 @@ namespace BossGongfaFixEnhance
                 int injuryId = int.Parse(list[Random.Range(0, list.Count)]);
                 int num6 = combatSkillDataInt * Random.Range(100, 201);
                 num += num6;
-                this.SetRealDamage(isActor, 1, injuryId, num6, num2, (num5 == 2) ? this.mediumSize : ((num5 == 3) ? this.largeSize : this.smallSize), false, num2, false);
-                this.ShowBattleState(10009, isActor, 0);
+                __instance.SetRealDamage(isActor, 1, injuryId, num6, num2, (num5 == 2) ? __instance.mediumSize : ((num5 == 3) ? __instance.largeSize : __instance.smallSize), false, num2, false);
+                __instance.ShowBattleState(10009, isActor, 0);
             }
             bool flag3 = false;
             Dictionary<int, int[]> dictionary = new Dictionary<int, int[]>(DateFile.instance.GetActorEquipGongFa(num2));
@@ -263,37 +263,37 @@ namespace BossGongfaFixEnhance
                 bool flag9 = flag3;
                 if (flag9)
                 {
-                    this.ShowBattleState(10010, isActor, 0);
+                    __instance.ShowBattleState(10010, isActor, 0);
                 }
                 DateFile.instance.ChangeMianQi(num2, num, 5);
             }
-            bool flag10 = this.battleEnd;
+            bool flag10 = __instance.battleEnd;
             if (!flag10)
             {
                 bool isActor3 = isActor;
                 if (isActor3)
                 {
-                    bool flag11 = num4 > this.actorUseGongFaMaxLevel;
+                    bool flag11 = num4 > __instance.actorUseGongFaMaxLevel;
                     if (flag11)
                     {
-                        this.actorUseGongFaMaxLevel = num4;
+                        __instance.actorUseGongFaMaxLevel = num4;
                     }
                 }
                 else
                 {
-                    bool flag12 = num4 > this.enemyUseGongFaMaxLevel;
+                    bool flag12 = num4 > __instance.enemyUseGongFaMaxLevel;
                     if (flag12)
                     {
-                        this.enemyUseGongFaMaxLevel = num4;
+                        __instance.enemyUseGongFaMaxLevel = num4;
                     }
                 }
-                bool gongFaFEffect = this.GetGongFaFEffect(5235, isActor, num2, 0);
+                bool gongFaFEffect = __instance.GetGongFaFEffect(5235, isActor, num2, 0);
                 if (gongFaFEffect)
                 {
                     List<int> list2 = new List<int>();
                     for (int j = 0; j < 7; j++)
                     {
-                        bool flag13 = this.battlerQiDamagePart[num2][j] > BattleSystem.GetNotHealBlockedAcupointCount(num2, j);
+                        bool flag13 = __instance.battlerQiDamagePart[num2][j] > BattleSystem.GetNotHealBlockedAcupointCount(num2, j);
                         if (flag13)
                         {
                             list2.Add(j);
@@ -302,22 +302,22 @@ namespace BossGongfaFixEnhance
                     bool flag14 = list2.Count > 0;
                     if (flag14)
                     {
-                        this.ShowBattleState(5235, isActor, 0);
-                        this.ChangeQiDamagePart(isActor, num2, num2, list2[Random.Range(0, list2.Count)], -3, true, true);
+                        __instance.ShowBattleState(5235, isActor, 0);
+                        __instance.ChangeQiDamagePart(isActor, num2, num2, list2[Random.Range(0, list2.Count)], -3, true, true);
                     }
                 }
                 switch (int.Parse(DateFile.instance.gongFaDate[gongFaId][6]))
                 {
                 case 1:
                 {
-                    this.useGongFaMask.CrossFadeAlpha(0.6f, 1f, true);
-                    bool flag15 = !isActor && this.maxBattleDefAttack > 0;
+                    __instance.useGongFaMask.CrossFadeAlpha(0.6f, 1f, true);
+                    bool flag15 = !isActor && __instance.maxBattleDefAttack > 0;
                     if (flag15)
                     {
-                        int num10 = (this.battleDefAttack + 1 == this.maxBattleDefAttack) ? 9 : this.battleDefAttack;
-                        this.ShowBattleState(10201 + num10, false, 0);
+                        int num10 = (__instance.battleDefAttack + 1 == __instance.maxBattleDefAttack) ? 9 : __instance.battleDefAttack;
+                        __instance.ShowBattleState(10201 + num10, false, 0);
                     }
-                    int num11 = this.NowDefEffectId(!isActor, num3);
+                    int num11 = __instance.NowDefEffectId(!isActor, num3);
                     bool flag16 = num11 != 0;
                     if (flag16)
                     {
@@ -326,23 +326,23 @@ namespace BossGongfaFixEnhance
                         {
                             if (num12 == 5287)
                             {
-                                bool gongFaDefEffect = this.GetGongFaDefEffect(num11, !isActor, num3, 0);
+                                bool gongFaDefEffect = __instance.GetGongFaDefEffect(num11, !isActor, num3, 0);
                                 if (gongFaDefEffect)
                                 {
-                                    this.AddBattleState(num3, 1, 505287, 100 + DateFile.instance.GetActorValue(num3, 514, true) / 5, 1);
+                                    __instance.AddBattleState(num3, 1, 505287, 100 + DateFile.instance.GetActorValue(num3, 514, true) / 5, 1);
                                 }
                             }
                         }
                         else
                         {
-                            bool gongFaDefEffect2 = this.GetGongFaDefEffect(num11, !isActor, num3, 0);
+                            bool gongFaDefEffect2 = __instance.GetGongFaDefEffect(num11, !isActor, num3, 0);
                             if (gongFaDefEffect2)
                             {
-                                this.ChangeActorSp(!isActor, -1, Mathf.Max(DateFile.instance.GetActorValue(num3, 514, true) / 50, 1));
+                                __instance.ChangeActorSp(!isActor, -1, Mathf.Max(DateFile.instance.GetActorValue(num3, 514, true) / 50, 1));
                             }
                         }
                     }
-                    bool gongFaFEffect2 = this.GetGongFaFEffect(276, isActor, num2, 0);
+                    bool gongFaFEffect2 = __instance.GetGongFaFEffect(276, isActor, num2, 0);
                     if (gongFaFEffect2)
                     {
                         List<int> list3 = new List<int>();
@@ -357,23 +357,23 @@ namespace BossGongfaFixEnhance
                         bool flag18 = list3.Count > 0;
                         if (flag18)
                         {
-                            this.ShowBattleState(276, isActor, 0);
-                            this.SetPoisonEffect(!isActor, num3, list3[Random.Range(0, list3.Count)], 0, true, -1);
+                            __instance.ShowBattleState(276, isActor, 0);
+                            __instance.SetPoisonEffect(!isActor, num3, list3[Random.Range(0, list3.Count)], 0, true, -1);
                         }
                     }
-                    bool flag19 = int.Parse(DateFile.instance.GetActorDate(num2, 15, true)) > int.Parse(DateFile.instance.GetActorDate(num3, 15, true)) && this.GetGongFaFEffect(261, isActor, num2, 0);
+                    bool flag19 = int.Parse(DateFile.instance.GetActorDate(num2, 15, true)) > int.Parse(DateFile.instance.GetActorDate(num3, 15, true)) && __instance.GetGongFaFEffect(261, isActor, num2, 0);
                     if (flag19)
                     {
                         int combatSkillDataInt2 = DateFile.GetCombatSkillDataInt(gongFaId, 7, num2, true);
-                        this.SetRealDamage(!isActor, 1, 45 + combatSkillDataInt2, Random.Range(150, 301), num3, (combatSkillDataInt2 == 2) ? this.mediumSize : ((combatSkillDataInt2 == 3) ? this.largeSize : this.smallSize), false, num2, true);
+                        __instance.SetRealDamage(!isActor, 1, 45 + combatSkillDataInt2, Random.Range(150, 301), num3, (combatSkillDataInt2 == 2) ? __instance.mediumSize : ((combatSkillDataInt2 == 3) ? __instance.largeSize : __instance.smallSize), false, num2, true);
                     }
-                    bool flag20 = int.Parse(DateFile.instance.GetActorDate(num3, 15, true)) > int.Parse(DateFile.instance.GetActorDate(num2, 15, true)) && this.GetGongFaFEffect(5261, !isActor, num3, 0);
+                    bool flag20 = int.Parse(DateFile.instance.GetActorDate(num3, 15, true)) > int.Parse(DateFile.instance.GetActorDate(num2, 15, true)) && __instance.GetGongFaFEffect(5261, !isActor, num3, 0);
                     if (flag20)
                     {
                         int combatSkillDataInt3 = DateFile.GetCombatSkillDataInt(gongFaId, 7, num2, true);
-                        this.SetRealDamage(isActor, 1, 45 + combatSkillDataInt3, Random.Range(150, 301), num2, (combatSkillDataInt3 == 2) ? this.mediumSize : ((combatSkillDataInt3 == 3) ? this.largeSize : this.smallSize), false, num3, true);
+                        __instance.SetRealDamage(isActor, 1, 45 + combatSkillDataInt3, Random.Range(150, 301), num2, (combatSkillDataInt3 == 2) ? __instance.mediumSize : ((combatSkillDataInt3 == 3) ? __instance.largeSize : __instance.smallSize), false, num3, true);
                     }
-                    bool gongFaFEffect3 = this.GetGongFaFEffect(30010, isActor, num2, 0);
+                    bool gongFaFEffect3 = __instance.GetGongFaFEffect(30010, isActor, num2, 0);
                     if (gongFaFEffect3)
                     {
                         int count = DateFile.instance.GetLifeDateList(num2, 801, false).Count;
@@ -382,15 +382,15 @@ namespace BossGongfaFixEnhance
                         bool flag21 = num13 > 0;
                         if (flag21)
                         {
-                            this.ShowBattleState(30010, isActor, 0);
+                            __instance.ShowBattleState(30010, isActor, 0);
                             for (int l = 0; l < num13; l++)
                             {
                                 int num14 = (Random.Range(0, 100) < 50) ? 0 : 1;
-                                this.SetRealDamage(!isActor, num14, (num14 == 0) ? 57 : 60, Random.Range(300, 600), num3, this.largeSize, false, num2, true);
+                                __instance.SetRealDamage(!isActor, num14, (num14 == 0) ? 57 : 60, Random.Range(300, 600), num3, __instance.largeSize, false, num2, true);
                             }
                         }
                     }
-                    bool gongFaFEffect4 = this.GetGongFaFEffect(40010, isActor, num2, 0);
+                    bool gongFaFEffect4 = __instance.GetGongFaFEffect(40010, isActor, num2, 0);
                     if (gongFaFEffect4)
                     {
                         int count3 = DateFile.instance.GetLifeDateList(num2, 801, false).Count;
@@ -399,59 +399,59 @@ namespace BossGongfaFixEnhance
                         bool flag22 = num15 > 0;
                         if (flag22)
                         {
-                            this.ShowBattleState(30010, isActor, 0);
+                            __instance.ShowBattleState(30010, isActor, 0);
                             for (int m = 0; m < num15; m++)
                             {
                                 int num16 = (Random.Range(0, 100) < 50) ? 0 : 1;
-                                this.SetRealDamage(!isActor, num16, (num16 == 0) ? 57 : 60, Random.Range(150, 300), num3, this.largeSize, false, num2, true);
+                                __instance.SetRealDamage(!isActor, num16, (num16 == 0) ? 57 : 60, Random.Range(150, 300), num3, __instance.largeSize, false, num2, true);
                             }
                         }
                     }
-                    bool flag23 = this.battleEnd;
+                    bool flag23 = __instance.battleEnd;
                     if (!flag23)
                     {
                         bool flag24 = DateFile.instance.HaveLifeDate(num3, 501);
                         if (flag24)
                         {
                             int num17 = Mathf.Clamp(DateFile.instance.actorLife[num3][501][0], 0, 200);
-                            bool flag25 = num17 > 100 && this.GetGongFaFEffect(20006, isActor, num2, 0);
+                            bool flag25 = num17 > 100 && __instance.GetGongFaFEffect(20006, isActor, num2, 0);
                             if (flag25)
                             {
                                 int num18 = num17 * num17 / 80;
-                                this.SetPoisonDamage(!isActor, num3, Random.Range(0, 6), Random.Range(num18, num18 * 2 + 1), true);
+                                __instance.SetPoisonDamage(!isActor, num3, Random.Range(0, 6), Random.Range(num18, num18 * 2 + 1), true);
                             }
                         }
-                        bool gongFaFEffect5 = this.GetGongFaFEffect(5276, isActor, num2, 0);
+                        bool gongFaFEffect5 = __instance.GetGongFaFEffect(5276, isActor, num2, 0);
                         if (gongFaFEffect5)
                         {
                             for (int n = 0; n < 6; n++)
                             {
                                 int num19 = DateFile.instance.battleActorsPoisons[num2][n];
-                                this.SetPoisonDamage(!isActor, num3, n, num19 * 20 / 100, true);
-                                this.SetPoisonDamage(isActor, num2, n, -(num19 * 20 / 100), true);
+                                __instance.SetPoisonDamage(!isActor, num3, n, num19 * 20 / 100, true);
+                                __instance.SetPoisonDamage(isActor, num2, n, -(num19 * 20 / 100), true);
                             }
                         }
-                        bool gongFaFEffect6 = this.GetGongFaFEffect(20009, isActor, num2, 0);
+                        bool gongFaFEffect6 = __instance.GetGongFaFEffect(20009, isActor, num2, 0);
                         if (gongFaFEffect6)
                         {
                             List<int> list4 = new List<int>();
                             for (int num20 = 0; num20 < 4; num20++)
                             {
-                                bool flag26 = isActor ? (this.enemyGongFaSp[num3][num20] > 0) : (this.actorGongFaSp[num3][num20] > 0);
+                                bool flag26 = isActor ? (__instance.enemyGongFaSp[num3][num20] > 0) : (__instance.actorGongFaSp[num3][num20] > 0);
                                 if (flag26)
                                 {
                                     list4.Add(num20);
                                 }
                             }
                             int num21 = (list4.Count > 0) ? list4[Random.Range(0, list4.Count)] : Random.Range(0, 4);
-                            int num22 = Mathf.Min(3, isActor ? this.enemyGongFaSp[num3][num21] : this.actorGongFaSp[num3][num21]);
-                            this.ChangeActorSp(isActor, num21, num22);
-                            this.ChangeActorSp(!isActor, num21, -num22);
+                            int num22 = Mathf.Min(3, isActor ? __instance.enemyGongFaSp[num3][num21] : __instance.actorGongFaSp[num3][num21]);
+                            __instance.ChangeActorSp(isActor, num21, num22);
+                            __instance.ChangeActorSp(!isActor, num21, -num22);
                         }
-                        bool flag27 = this.enemyTeamId == 4 & isActor;
+                        bool flag27 = __instance.enemyTeamId == 4 & isActor;
                         if (flag27)
                         {
-                            this.TimePause(0f, true, 0f);
+                            __instance.TimePause(0f, true, 0f);
                             UIManager.Instance.AddUI("ui_MessageWindow", new object[]
                             {
                                 new int[]
@@ -466,7 +466,7 @@ namespace BossGongfaFixEnhance
                         bool flag28 = DateFile.GetCombatSkillConsumedMobility(gongFaId, num2) > 0;
                         if (flag28)
                         {
-                            int num23 = isActor ? this.actorLegGongFaMoveTyp : this.enemyLegGongFaMoveTyp;
+                            int num23 = isActor ? __instance.actorLegGongFaMoveTyp : __instance.enemyLegGongFaMoveTyp;
                             int num24 = num23;
                             if (num24 <= 460)
                             {
@@ -474,19 +474,19 @@ namespace BossGongfaFixEnhance
                                 {
                                     if (num24 == 460)
                                     {
-                                        bool gongFaMoveEffect = this.GetGongFaMoveEffect(num23, isActor, num2, 0);
+                                        bool gongFaMoveEffect = __instance.GetGongFaMoveEffect(num23, isActor, num2, 0);
                                         if (gongFaMoveEffect)
                                         {
-                                            this.ShowBattleState(num23, isActor, 0);
+                                            __instance.ShowBattleState(num23, isActor, 0);
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    bool gongFaMoveEffect2 = this.GetGongFaMoveEffect(num23, isActor, num2, 0);
+                                    bool gongFaMoveEffect2 = __instance.GetGongFaMoveEffect(num23, isActor, num2, 0);
                                     if (gongFaMoveEffect2)
                                     {
-                                        this.ShowBattleState(num23, isActor, 0);
+                                        __instance.ShowBattleState(num23, isActor, 0);
                                     }
                                 }
                             }
@@ -496,42 +496,42 @@ namespace BossGongfaFixEnhance
                                 {
                                     if (num24 == 5490)
                                     {
-                                        bool gongFaMoveEffect3 = this.GetGongFaMoveEffect(num23, isActor, num2, 0);
+                                        bool gongFaMoveEffect3 = __instance.GetGongFaMoveEffect(num23, isActor, num2, 0);
                                         if (gongFaMoveEffect3)
                                         {
-                                            this.ShowBattleState(num23, isActor, 0);
+                                            __instance.ShowBattleState(num23, isActor, 0);
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    bool gongFaMoveEffect4 = this.GetGongFaMoveEffect(num23, isActor, num2, 0);
+                                    bool gongFaMoveEffect4 = __instance.GetGongFaMoveEffect(num23, isActor, num2, 0);
                                     if (gongFaMoveEffect4)
                                     {
-                                        this.ShowBattleState(num23, isActor, 0);
+                                        __instance.ShowBattleState(num23, isActor, 0);
                                     }
                                 }
                             }
                             else
                             {
-                                bool gongFaMoveEffect5 = this.GetGongFaMoveEffect(num23, isActor, num2, 0);
+                                bool gongFaMoveEffect5 = __instance.GetGongFaMoveEffect(num23, isActor, num2, 0);
                                 if (gongFaMoveEffect5)
                                 {
-                                    this.ShowBattleState(num23, isActor, 0);
+                                    __instance.ShowBattleState(num23, isActor, 0);
                                 }
                             }
                         }
                         SingletonObject.getInstance<YieldHelper>().DelayFrameDo(1U, delegate
                         {
-                            this.ShowGongFaDef(isActor, gongFaId);
+                            __instance.ShowGongFaDef(isActor, gongFaId);
                         });
                     }
                     break;
                 }
                 case 2:
                 {
-                    this.SetMoveGongFa(isActor, gongFaId);
-                    int num25 = this.NowMoveEffectId(isActor, num2);
+                    __instance.SetMoveGongFa(isActor, gongFaId);
+                    int num25 = __instance.NowMoveEffectId(isActor, num2);
                     bool flag29 = num25 != 0;
                     if (flag29)
                     {
@@ -546,19 +546,19 @@ namespace BossGongfaFixEnhance
                                     {
                                         if (num26 == 410)
                                         {
-                                            bool gongFaMoveEffect6 = this.GetGongFaMoveEffect(num25, isActor, num2, 0);
+                                            bool gongFaMoveEffect6 = __instance.GetGongFaMoveEffect(num25, isActor, num2, 0);
                                             if (gongFaMoveEffect6)
                                             {
-                                                this.ChangeMoveCost(isActor, -1, 25 + Mathf.Min((isActor ? this.actorActionCost.Count : this.enemyActionCost.Count) * 10, 50), false);
+                                                __instance.ChangeMoveCost(isActor, -1, 25 + Mathf.Min((isActor ? __instance.actorActionCost.Count : __instance.enemyActionCost.Count) * 10, 50), false);
                                             }
                                         }
                                     }
                                     else
                                     {
-                                        bool gongFaMoveEffect7 = this.GetGongFaMoveEffect(num25, isActor, num2, 0);
+                                        bool gongFaMoveEffect7 = __instance.GetGongFaMoveEffect(num25, isActor, num2, 0);
                                         if (gongFaMoveEffect7)
                                         {
-                                            this.ChangeActorSp(isActor, 1, 1);
+                                            __instance.ChangeActorSp(isActor, 1, 1);
                                         }
                                     }
                                 }
@@ -568,23 +568,23 @@ namespace BossGongfaFixEnhance
                                     {
                                     case 436:
                                     {
-                                        bool gongFaMoveEffect8 = this.GetGongFaMoveEffect(num25, isActor, num2, 0);
+                                        bool gongFaMoveEffect8 = __instance.GetGongFaMoveEffect(num25, isActor, num2, 0);
                                         if (gongFaMoveEffect8)
                                         {
-                                            int num27 = isActor ? this.actorGongFaSp[num2][0] : this.enemyGongFaSp[num2][0];
-                                            this.ChangeActorSp(isActor, 0, -num27);
-                                            this.ChangeActorSp(isActor, 1, num27);
+                                            int num27 = isActor ? __instance.actorGongFaSp[num2][0] : __instance.enemyGongFaSp[num2][0];
+                                            __instance.ChangeActorSp(isActor, 0, -num27);
+                                            __instance.ChangeActorSp(isActor, 1, num27);
                                         }
                                         break;
                                     }
                                     case 437:
                                     {
-                                        bool gongFaMoveEffect9 = this.GetGongFaMoveEffect(num25, isActor, num2, 0);
+                                        bool gongFaMoveEffect9 = __instance.GetGongFaMoveEffect(num25, isActor, num2, 0);
                                         if (gongFaMoveEffect9)
                                         {
                                             int num28 = 6000;
-                                            this.UpdateStrength(isActor, (float)num28, false);
-                                            this.UpdateStrength(!isActor, (float)(-(float)num28), false);
+                                            __instance.UpdateStrength(isActor, (float)num28, false);
+                                            __instance.UpdateStrength(!isActor, (float)(-(float)num28), false);
                                         }
                                         break;
                                     }
@@ -593,20 +593,20 @@ namespace BossGongfaFixEnhance
                                         break;
                                     case 440:
                                     {
-                                        bool gongFaMoveEffect10 = this.GetGongFaMoveEffect(num25, isActor, num2, 0);
+                                        bool gongFaMoveEffect10 = __instance.GetGongFaMoveEffect(num25, isActor, num2, 0);
                                         if (gongFaMoveEffect10)
                                         {
-                                            this.ShowBattleState(num25, isActor, 0);
+                                            __instance.ShowBattleState(num25, isActor, 0);
                                         }
                                         break;
                                     }
                                     default:
                                         if (num26 == 448)
                                         {
-                                            bool gongFaMoveEffect11 = this.GetGongFaMoveEffect(num25, isActor, num2, 0);
+                                            bool gongFaMoveEffect11 = __instance.GetGongFaMoveEffect(num25, isActor, num2, 0);
                                             if (gongFaMoveEffect11)
                                             {
-                                                this.ShowBattleState(num25, isActor, 0);
+                                                __instance.ShowBattleState(num25, isActor, 0);
                                             }
                                         }
                                         break;
@@ -614,10 +614,10 @@ namespace BossGongfaFixEnhance
                                 }
                                 else
                                 {
-                                    bool gongFaMoveEffect12 = this.GetGongFaMoveEffect(num25, isActor, num2, 0);
+                                    bool gongFaMoveEffect12 = __instance.GetGongFaMoveEffect(num25, isActor, num2, 0);
                                     if (gongFaMoveEffect12)
                                     {
-                                        this.UpdateMagic(isActor, 30000f, false);
+                                        __instance.UpdateMagic(isActor, 30000f, false);
                                     }
                                 }
                             }
@@ -629,28 +629,28 @@ namespace BossGongfaFixEnhance
                                     {
                                         if (num26 == 458)
                                         {
-                                            bool gongFaMoveEffect13 = this.GetGongFaMoveEffect(num25, isActor, num2, 0);
+                                            bool gongFaMoveEffect13 = __instance.GetGongFaMoveEffect(num25, isActor, num2, 0);
                                             if (gongFaMoveEffect13)
                                             {
-                                                this.ShowBattleState(num25, isActor, 0);
+                                                __instance.ShowBattleState(num25, isActor, 0);
                                             }
                                         }
                                     }
                                     else
                                     {
-                                        bool gongFaMoveEffect14 = this.GetGongFaMoveEffect(num25, isActor, num2, 0);
+                                        bool gongFaMoveEffect14 = __instance.GetGongFaMoveEffect(num25, isActor, num2, 0);
                                         if (gongFaMoveEffect14)
                                         {
-                                            this.ShowBattleState(num25, isActor, 0);
+                                            __instance.ShowBattleState(num25, isActor, 0);
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    bool gongFaMoveEffect15 = this.GetGongFaMoveEffect(num25, isActor, num2, int.Parse(DateFile.instance.GetActorDate(num2, 15, true)) / 10);
+                                    bool gongFaMoveEffect15 = __instance.GetGongFaMoveEffect(num25, isActor, num2, int.Parse(DateFile.instance.GetActorDate(num2, 15, true)) / 10);
                                     if (gongFaMoveEffect15)
                                     {
-                                        this.ChangeActorSp(isActor, 1, 2);
+                                        __instance.ChangeActorSp(isActor, 1, 2);
                                     }
                                 }
                             }
@@ -660,30 +660,30 @@ namespace BossGongfaFixEnhance
                                 {
                                     if (num26 == 493)
                                     {
-                                        bool gongFaMoveEffect16 = this.GetGongFaMoveEffect(num25, isActor, num2, 0);
+                                        bool gongFaMoveEffect16 = __instance.GetGongFaMoveEffect(num25, isActor, num2, 0);
                                         if (gongFaMoveEffect16)
                                         {
-                                            this.AddBattleState(num3, 2, 500493, 100, 1);
+                                            __instance.AddBattleState(num3, 2, 500493, 100, 1);
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    int num29 = isActor ? this.actorGongFaSp[num2][1] : this.enemyGongFaSp[num2][1];
-                                    bool flag30 = num29 >= 9 && this.GetGongFaMoveEffect(num25, isActor, num2, 0);
+                                    int num29 = isActor ? __instance.actorGongFaSp[num2][1] : __instance.enemyGongFaSp[num2][1];
+                                    bool flag30 = num29 >= 9 && __instance.GetGongFaMoveEffect(num25, isActor, num2, 0);
                                     if (flag30)
                                     {
-                                        this.ChangeActorSp(isActor, 1, -9);
-                                        this.UpdateRangeText(90, isActor);
+                                        __instance.ChangeActorSp(isActor, 1, -9);
+                                        __instance.UpdateRangeText(90, isActor);
                                     }
                                 }
                             }
                             else
                             {
-                                bool gongFaMoveEffect17 = this.GetGongFaMoveEffect(num25, isActor, num2, 0);
+                                bool gongFaMoveEffect17 = __instance.GetGongFaMoveEffect(num25, isActor, num2, 0);
                                 if (gongFaMoveEffect17)
                                 {
-                                    this.ChangeMoveCost(!isActor, 1, -50, true);
+                                    __instance.ChangeMoveCost(!isActor, 1, -50, true);
                                 }
                             }
                         }
@@ -697,28 +697,28 @@ namespace BossGongfaFixEnhance
                                     {
                                         if (num26 == 5428)
                                         {
-                                            bool gongFaMoveEffect18 = this.GetGongFaMoveEffect(num25, isActor, num2, 0);
+                                            bool gongFaMoveEffect18 = __instance.GetGongFaMoveEffect(num25, isActor, num2, 0);
                                             if (gongFaMoveEffect18)
                                             {
-                                                this.UpdateStrength(isActor, 30000f, false);
+                                                __instance.UpdateStrength(isActor, 30000f, false);
                                             }
                                         }
                                     }
                                     else
                                     {
-                                        bool gongFaMoveEffect19 = this.GetGongFaMoveEffect(num25, isActor, num2, 0);
+                                        bool gongFaMoveEffect19 = __instance.GetGongFaMoveEffect(num25, isActor, num2, 0);
                                         if (gongFaMoveEffect19)
                                         {
-                                            this.ChangeMoveCost(isActor, -1, 75 - Mathf.Min((isActor ? this.actorActionCost.Count : this.enemyActionCost.Count) * 10, 50), false);
+                                            __instance.ChangeMoveCost(isActor, -1, 75 - Mathf.Min((isActor ? __instance.actorActionCost.Count : __instance.enemyActionCost.Count) * 10, 50), false);
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    bool gongFaMoveEffect20 = this.GetGongFaMoveEffect(num25, isActor, num2, 0);
+                                    bool gongFaMoveEffect20 = __instance.GetGongFaMoveEffect(num25, isActor, num2, 0);
                                     if (gongFaMoveEffect20)
                                     {
-                                        this.ChangeActorSp(!isActor, 1, -1);
+                                        __instance.ChangeActorSp(!isActor, 1, -1);
                                     }
                                 }
                             }
@@ -728,23 +728,23 @@ namespace BossGongfaFixEnhance
                                 {
                                 case 5436:
                                 {
-                                    bool gongFaMoveEffect21 = this.GetGongFaMoveEffect(num25, isActor, num2, 0);
+                                    bool gongFaMoveEffect21 = __instance.GetGongFaMoveEffect(num25, isActor, num2, 0);
                                     if (gongFaMoveEffect21)
                                     {
-                                        int num30 = isActor ? this.actorGongFaSp[num2][2] : this.enemyGongFaSp[num2][2];
-                                        this.ChangeActorSp(isActor, 2, -num30);
-                                        this.ChangeActorSp(isActor, 1, num30);
+                                        int num30 = isActor ? __instance.actorGongFaSp[num2][2] : __instance.enemyGongFaSp[num2][2];
+                                        __instance.ChangeActorSp(isActor, 2, -num30);
+                                        __instance.ChangeActorSp(isActor, 1, num30);
                                     }
                                     break;
                                 }
                                 case 5437:
                                 {
-                                    bool gongFaMoveEffect22 = this.GetGongFaMoveEffect(num25, isActor, num2, 0);
+                                    bool gongFaMoveEffect22 = __instance.GetGongFaMoveEffect(num25, isActor, num2, 0);
                                     if (gongFaMoveEffect22)
                                     {
                                         int num31 = 6000;
-                                        this.UpdateMagic(isActor, (float)num31, false);
-                                        this.UpdateMagic(!isActor, (float)(-(float)num31), false);
+                                        __instance.UpdateMagic(isActor, (float)num31, false);
+                                        __instance.UpdateMagic(!isActor, (float)(-(float)num31), false);
                                     }
                                     break;
                                 }
@@ -753,20 +753,20 @@ namespace BossGongfaFixEnhance
                                     break;
                                 case 5440:
                                 {
-                                    bool gongFaMoveEffect23 = this.GetGongFaMoveEffect(num25, isActor, num2, 0);
+                                    bool gongFaMoveEffect23 = __instance.GetGongFaMoveEffect(num25, isActor, num2, 0);
                                     if (gongFaMoveEffect23)
                                     {
-                                        this.ShowBattleState(num25, isActor, 0);
+                                        __instance.ShowBattleState(num25, isActor, 0);
                                     }
                                     break;
                                 }
                                 default:
                                     if (num26 == 5448)
                                     {
-                                        bool gongFaMoveEffect24 = this.GetGongFaMoveEffect(num25, isActor, num2, 0);
+                                        bool gongFaMoveEffect24 = __instance.GetGongFaMoveEffect(num25, isActor, num2, 0);
                                         if (gongFaMoveEffect24)
                                         {
-                                            this.ShowBattleState(num25, isActor, 0);
+                                            __instance.ShowBattleState(num25, isActor, 0);
                                         }
                                     }
                                     break;
@@ -774,10 +774,10 @@ namespace BossGongfaFixEnhance
                             }
                             else
                             {
-                                bool gongFaMoveEffect25 = this.GetGongFaMoveEffect(num25, isActor, num2, 0);
+                                bool gongFaMoveEffect25 = __instance.GetGongFaMoveEffect(num25, isActor, num2, 0);
                                 if (gongFaMoveEffect25)
                                 {
-                                    this.RemoveRandWeaponCd(isActor);
+                                    __instance.RemoveRandWeaponCd(isActor);
                                 }
                             }
                         }
@@ -789,28 +789,28 @@ namespace BossGongfaFixEnhance
                                 {
                                     if (num26 == 5458)
                                     {
-                                        bool gongFaMoveEffect26 = this.GetGongFaMoveEffect(num25, isActor, num2, 0);
+                                        bool gongFaMoveEffect26 = __instance.GetGongFaMoveEffect(num25, isActor, num2, 0);
                                         if (gongFaMoveEffect26)
                                         {
-                                            this.ShowBattleState(num25, isActor, 0);
+                                            __instance.ShowBattleState(num25, isActor, 0);
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    bool gongFaMoveEffect27 = this.GetGongFaMoveEffect(num25, isActor, num2, 0);
+                                    bool gongFaMoveEffect27 = __instance.GetGongFaMoveEffect(num25, isActor, num2, 0);
                                     if (gongFaMoveEffect27)
                                     {
-                                        this.ShowBattleState(num25, isActor, 0);
+                                        __instance.ShowBattleState(num25, isActor, 0);
                                     }
                                 }
                             }
                             else
                             {
-                                bool gongFaMoveEffect28 = this.GetGongFaMoveEffect(num25, isActor, num2, int.Parse(DateFile.instance.GetActorDate(num2, 15, true)) / 10);
+                                bool gongFaMoveEffect28 = __instance.GetGongFaMoveEffect(num25, isActor, num2, int.Parse(DateFile.instance.GetActorDate(num2, 15, true)) / 10);
                                 if (gongFaMoveEffect28)
                                 {
-                                    this.ChangeActorSp(!isActor, 1, -2);
+                                    __instance.ChangeActorSp(!isActor, 1, -2);
                                 }
                             }
                         }
@@ -820,30 +820,30 @@ namespace BossGongfaFixEnhance
                             {
                                 if (num26 == 5493)
                                 {
-                                    bool gongFaMoveEffect29 = this.GetGongFaMoveEffect(num25, isActor, num2, 0);
+                                    bool gongFaMoveEffect29 = __instance.GetGongFaMoveEffect(num25, isActor, num2, 0);
                                     if (gongFaMoveEffect29)
                                     {
-                                        this.AddBattleState(num3, 2, 505493, 100, 1);
+                                        __instance.AddBattleState(num3, 2, 505493, 100, 1);
                                     }
                                 }
                             }
                             else
                             {
-                                int num32 = isActor ? this.actorGongFaSp[num2][1] : this.enemyGongFaSp[num2][1];
-                                bool flag31 = num32 >= 9 && this.GetGongFaMoveEffect(num25, isActor, num2, 0);
+                                int num32 = isActor ? __instance.actorGongFaSp[num2][1] : __instance.enemyGongFaSp[num2][1];
+                                bool flag31 = num32 >= 9 && __instance.GetGongFaMoveEffect(num25, isActor, num2, 0);
                                 if (flag31)
                                 {
-                                    this.ChangeActorSp(isActor, 1, -9);
-                                    this.UpdateRangeText(20, isActor);
+                                    __instance.ChangeActorSp(isActor, 1, -9);
+                                    __instance.UpdateRangeText(20, isActor);
                                 }
                             }
                         }
                         else
                         {
-                            bool gongFaMoveEffect30 = this.GetGongFaMoveEffect(num25, isActor, num2, 0);
+                            bool gongFaMoveEffect30 = __instance.GetGongFaMoveEffect(num25, isActor, num2, 0);
                             if (gongFaMoveEffect30)
                             {
-                                this.RemoveMoveCost(!isActor, 0, true, false, false);
+                                __instance.RemoveMoveCost(!isActor, 0, true, false, false);
                             }
                         }
                     }
@@ -851,8 +851,8 @@ namespace BossGongfaFixEnhance
                 }
                 case 3:
                 {
-                    this.SetDefGongFa(isActor, gongFaId);
-                    int num33 = this.NowDefEffectId(isActor, num2);
+                    __instance.SetDefGongFa(isActor, gongFaId);
+                    int num33 = __instance.NowDefEffectId(isActor, num2);
                     bool flag32 = num33 != 0;
                     if (flag32)
                     {
@@ -867,40 +867,40 @@ namespace BossGongfaFixEnhance
                                     {
                                         if (num34 == 248)
                                         {
-                                            bool gongFaDefEffect3 = this.GetGongFaDefEffect(num33, isActor, num2, 0);
+                                            bool gongFaDefEffect3 = __instance.GetGongFaDefEffect(num33, isActor, num2, 0);
                                             if (gongFaDefEffect3)
                                             {
-                                                int num35 = this.battlerDpValue[num2][0];
+                                                int num35 = __instance.battlerDpValue[num2][0];
                                                 bool flag33 = num35 > 0;
                                                 if (flag33)
                                                 {
-                                                    this.ChangeActorSp(isActor, 0, num35 * 100 / Mathf.Max(this.battlerDpValue[num2][1], 1) / 10);
+                                                    __instance.ChangeActorSp(isActor, 0, num35 * 100 / Mathf.Max(__instance.battlerDpValue[num2][1], 1) / 10);
                                                     BattleSystem.AddDefence(num2, isActor, -num35);
-                                                    this.ShowBattleState(num33, isActor, 0);
+                                                    __instance.ShowBattleState(num33, isActor, 0);
                                                 }
                                             }
                                         }
                                     }
                                     else
                                     {
-                                        bool gongFaDefEffect4 = this.GetGongFaDefEffect(num33, isActor, num2, 0);
+                                        bool gongFaDefEffect4 = __instance.GetGongFaDefEffect(num33, isActor, num2, 0);
                                         if (gongFaDefEffect4)
                                         {
                                             bool flag34 = false;
                                             for (int num36 = 0; num36 < 4; num36++)
                                             {
-                                                int num37 = isActor ? this.actorGongFaSp[num2][num36] : this.enemyGongFaSp[num2][num36];
+                                                int num37 = isActor ? __instance.actorGongFaSp[num2][num36] : __instance.enemyGongFaSp[num2][num36];
                                                 bool flag35 = num37 < DateFile.instance.GetMaxGongFaSp(num2, num36, false);
                                                 if (flag35)
                                                 {
                                                     flag34 = true;
-                                                    this.ChangeActorSp(isActor, num36, 5);
+                                                    __instance.ChangeActorSp(isActor, num36, 5);
                                                 }
                                             }
                                             bool flag36 = flag34;
                                             if (flag36)
                                             {
-                                                this.ShowBattleState(num33, isActor, 0);
+                                                __instance.ShowBattleState(num33, isActor, 0);
                                             }
                                         }
                                     }
@@ -909,7 +909,7 @@ namespace BossGongfaFixEnhance
                                 {
                                     if (num34 == 269)
                                     {
-                                        bool gongFaDefEffect5 = this.GetGongFaDefEffect(num33, isActor, num2, 0);
+                                        bool gongFaDefEffect5 = __instance.GetGongFaDefEffect(num33, isActor, num2, 0);
                                         if (gongFaDefEffect5)
                                         {
                                             bool flag37 = false;
@@ -923,23 +923,23 @@ namespace BossGongfaFixEnhance
                                                     {
                                                     case 0:
                                                         flag37 = true;
-                                                        this.EquipBreak(num2, isActor, num39, num2, 1, 100);
-                                                        this.ChangeActorSp(isActor, 1, 1);
+                                                        __instance.EquipBreak(num2, isActor, num39, num2, 1, 100);
+                                                        __instance.ChangeActorSp(isActor, 1, 1);
                                                         break;
                                                     case 1:
                                                         flag37 = true;
-                                                        this.EquipBreak(num2, isActor, num39, num2, 1, 100);
-                                                        this.ChangeActorSp(isActor, 0, 1);
+                                                        __instance.EquipBreak(num2, isActor, num39, num2, 1, 100);
+                                                        __instance.ChangeActorSp(isActor, 0, 1);
                                                         break;
                                                     case 2:
                                                         flag37 = true;
-                                                        this.EquipBreak(num2, isActor, num39, num2, 1, 100);
-                                                        this.ChangeActorSp(isActor, 3, 1);
+                                                        __instance.EquipBreak(num2, isActor, num39, num2, 1, 100);
+                                                        __instance.ChangeActorSp(isActor, 3, 1);
                                                         break;
                                                     case 3:
                                                         flag37 = true;
-                                                        this.EquipBreak(num2, isActor, num39, num2, 1, 100);
-                                                        this.ChangeActorSp(isActor, 2, 1);
+                                                        __instance.EquipBreak(num2, isActor, num39, num2, 1, 100);
+                                                        __instance.ChangeActorSp(isActor, 2, 1);
                                                         break;
                                                     }
                                                 }
@@ -947,14 +947,14 @@ namespace BossGongfaFixEnhance
                                             bool flag39 = flag37;
                                             if (flag39)
                                             {
-                                                this.ShowBattleState(num33, isActor, 0);
+                                                __instance.ShowBattleState(num33, isActor, 0);
                                             }
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    bool gongFaDefEffect6 = this.GetGongFaDefEffect(num33, isActor, num2, 0);
+                                    bool gongFaDefEffect6 = __instance.GetGongFaDefEffect(num33, isActor, num2, 0);
                                     if (gongFaDefEffect6)
                                     {
                                         int totalFlaws = BattleSystem.GetTotalFlaws(num2);
@@ -962,7 +962,7 @@ namespace BossGongfaFixEnhance
                                         if (flag40)
                                         {
                                             BattleSystem.TransferFlawToEnemy(isActor, num2, num3, -1, Mathf.Min(totalFlaws, 3));
-                                            this.ShowBattleState(num33, !isActor, 0);
+                                            __instance.ShowBattleState(num33, !isActor, 0);
                                         }
                                     }
                                 }
@@ -973,25 +973,25 @@ namespace BossGongfaFixEnhance
                                 {
                                     if (num34 == 291)
                                     {
-                                        bool gongFaDefEffect7 = this.GetGongFaDefEffect(num33, isActor, num2, 0);
+                                        bool gongFaDefEffect7 = __instance.GetGongFaDefEffect(num33, isActor, num2, 0);
                                         if (gongFaDefEffect7)
                                         {
-                                            int num40 = isActor ? this.enemyBugSize : this.actorBugSize;
+                                            int num40 = isActor ? __instance.enemyBugSize : __instance.actorBugSize;
                                             bool flag41 = num40 > 0;
                                             if (flag41)
                                             {
-                                                this.ChangeBugSize(!isActor, -3);
-                                                this.ShowBattleState(num33, isActor, 0);
+                                                __instance.ChangeBugSize(!isActor, -3);
+                                                __instance.ShowBattleState(num33, isActor, 0);
                                             }
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    bool gongFaDefEffect8 = this.GetGongFaDefEffect(num33, isActor, num2, 0);
+                                    bool gongFaDefEffect8 = __instance.GetGongFaDefEffect(num33, isActor, num2, 0);
                                     if (gongFaDefEffect8)
                                     {
-                                        this.ChangeActorSp(isActor, 2, 2);
+                                        __instance.ChangeActorSp(isActor, 2, 2);
                                     }
                                 }
                             }
@@ -999,19 +999,19 @@ namespace BossGongfaFixEnhance
                             {
                                 if (num34 == 315)
                                 {
-                                    bool gongFaDefEffect9 = this.GetGongFaDefEffect(num33, isActor, num2, 0);
+                                    bool gongFaDefEffect9 = __instance.GetGongFaDefEffect(num33, isActor, num2, 0);
                                     if (gongFaDefEffect9)
                                     {
-                                        this.UpdateBattlerMove(!isActor, 20, null, null, false);
+                                        __instance.UpdateBattlerMove(!isActor, 20, null, null, false);
                                     }
                                 }
                             }
                             else
                             {
-                                bool gongFaDefEffect10 = this.GetGongFaDefEffect(num33, isActor, num2, 0);
+                                bool gongFaDefEffect10 = __instance.GetGongFaDefEffect(num33, isActor, num2, 0);
                                 if (gongFaDefEffect10)
                                 {
-                                    this.AddBattleState(num3, 2, 500313, 50 + Mathf.Max(150 - DateFile.instance.GetActorResources(num3)[3] * 5, 0), 1);
+                                    __instance.AddBattleState(num3, 2, 500313, 50 + Mathf.Max(150 - DateFile.instance.GetActorResources(num3)[3] * 5, 0), 1);
                                 }
                             }
                         }
@@ -1023,40 +1023,40 @@ namespace BossGongfaFixEnhance
                                 {
                                     if (num34 == 5248)
                                     {
-                                        bool gongFaDefEffect11 = this.GetGongFaDefEffect(num33, isActor, num2, 0);
+                                        bool gongFaDefEffect11 = __instance.GetGongFaDefEffect(num33, isActor, num2, 0);
                                         if (gongFaDefEffect11)
                                         {
-                                            int num41 = this.battlerDpValue[num2][0];
+                                            int num41 = __instance.battlerDpValue[num2][0];
                                             bool flag42 = num41 > 0;
                                             if (flag42)
                                             {
-                                                this.ChangeActorSp(isActor, 2, num41 * 100 / Mathf.Max(this.battlerDpValue[num2][1], 1) / 10);
+                                                __instance.ChangeActorSp(isActor, 2, num41 * 100 / Mathf.Max(__instance.battlerDpValue[num2][1], 1) / 10);
                                                 BattleSystem.AddDefence(num2, isActor, -num41);
-                                                this.ShowBattleState(num33, isActor, 0);
+                                                __instance.ShowBattleState(num33, isActor, 0);
                                             }
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    bool gongFaDefEffect12 = this.GetGongFaDefEffect(num33, isActor, num2, 0);
+                                    bool gongFaDefEffect12 = __instance.GetGongFaDefEffect(num33, isActor, num2, 0);
                                     if (gongFaDefEffect12)
                                     {
                                         bool flag43 = false;
                                         for (int num42 = 0; num42 < 4; num42++)
                                         {
-                                            int num43 = isActor ? this.enemyGongFaSp[num3][num42] : this.actorGongFaSp[num3][num42];
+                                            int num43 = isActor ? __instance.enemyGongFaSp[num3][num42] : __instance.actorGongFaSp[num3][num42];
                                             bool flag44 = num43 > DateFile.instance.GetMaxGongFaSp(num3, num42, false);
                                             if (flag44)
                                             {
                                                 flag43 = true;
-                                                this.ChangeActorSp(!isActor, num42, -5);
+                                                __instance.ChangeActorSp(!isActor, num42, -5);
                                             }
                                         }
                                         bool flag45 = flag43;
                                         if (flag45)
                                         {
-                                            this.ShowBattleState(num33, isActor, 0);
+                                            __instance.ShowBattleState(num33, isActor, 0);
                                         }
                                     }
                                 }
@@ -1065,7 +1065,7 @@ namespace BossGongfaFixEnhance
                             {
                                 if (num34 == 5269)
                                 {
-                                    bool gongFaDefEffect13 = this.GetGongFaDefEffect(num33, isActor, num2, 0);
+                                    bool gongFaDefEffect13 = __instance.GetGongFaDefEffect(num33, isActor, num2, 0);
                                     if (gongFaDefEffect13)
                                     {
                                         bool flag46 = false;
@@ -1079,23 +1079,23 @@ namespace BossGongfaFixEnhance
                                                 {
                                                 case 0:
                                                     flag46 = true;
-                                                    this.EquipBreak(num2, isActor, num45, num2, 1, 100);
-                                                    this.ChangeActorSp(!isActor, 1, -1);
+                                                    __instance.EquipBreak(num2, isActor, num45, num2, 1, 100);
+                                                    __instance.ChangeActorSp(!isActor, 1, -1);
                                                     break;
                                                 case 1:
                                                     flag46 = true;
-                                                    this.EquipBreak(num2, isActor, num45, num2, 1, 100);
-                                                    this.ChangeActorSp(!isActor, 0, -1);
+                                                    __instance.EquipBreak(num2, isActor, num45, num2, 1, 100);
+                                                    __instance.ChangeActorSp(!isActor, 0, -1);
                                                     break;
                                                 case 2:
                                                     flag46 = true;
-                                                    this.EquipBreak(num2, isActor, num45, num2, 1, 100);
-                                                    this.ChangeActorSp(!isActor, 3, -1);
+                                                    __instance.EquipBreak(num2, isActor, num45, num2, 1, 100);
+                                                    __instance.ChangeActorSp(!isActor, 3, -1);
                                                     break;
                                                 case 3:
                                                     flag46 = true;
-                                                    this.EquipBreak(num2, isActor, num45, num2, 1, 100);
-                                                    this.ChangeActorSp(!isActor, 2, -1);
+                                                    __instance.EquipBreak(num2, isActor, num45, num2, 1, 100);
+                                                    __instance.ChangeActorSp(!isActor, 2, -1);
                                                     break;
                                                 }
                                             }
@@ -1103,14 +1103,14 @@ namespace BossGongfaFixEnhance
                                         bool flag48 = flag46;
                                         if (flag48)
                                         {
-                                            this.ShowBattleState(num33, isActor, 0);
+                                            __instance.ShowBattleState(num33, isActor, 0);
                                         }
                                     }
                                 }
                             }
                             else
                             {
-                                bool gongFaDefEffect14 = this.GetGongFaDefEffect(num33, isActor, num2, 0);
+                                bool gongFaDefEffect14 = __instance.GetGongFaDefEffect(num33, isActor, num2, 0);
                                 if (gongFaDefEffect14)
                                 {
                                     int totalBlockedAcupoints = BattleSystem.GetTotalBlockedAcupoints(num2);
@@ -1118,7 +1118,7 @@ namespace BossGongfaFixEnhance
                                     if (flag49)
                                     {
                                         BattleSystem.TransferBlockedAcupointToEnemy(isActor, num2, num3, -1, Mathf.Min(totalBlockedAcupoints, 3));
-                                        this.ShowBattleState(num33, !isActor, 0);
+                                        __instance.ShowBattleState(num33, !isActor, 0);
                                     }
                                 }
                             }
@@ -1129,26 +1129,26 @@ namespace BossGongfaFixEnhance
                             {
                                 if (num34 == 5291)
                                 {
-                                    bool gongFaDefEffect15 = this.GetGongFaDefEffect(num33, isActor, num2, 0);
+                                    bool gongFaDefEffect15 = __instance.GetGongFaDefEffect(num33, isActor, num2, 0);
                                     if (gongFaDefEffect15)
                                     {
-                                        int num46 = isActor ? this.enemyBugSize : this.actorBugSize;
+                                        int num46 = isActor ? __instance.enemyBugSize : __instance.actorBugSize;
                                         bool flag50 = num46 > 0;
                                         if (flag50)
                                         {
                                             int injuryId2 = 55 + Mathf.Min(num46 / 3, 2);
-                                            this.SetRealDamage(!isActor, BattleSystem.GetDamageType(injuryId2), injuryId2, num46 * 100, num3, BattleSystem.GetDamageTextSize(injuryId2), true, num2, true);
-                                            this.ShowBattleState(num33, isActor, 0);
+                                            __instance.SetRealDamage(!isActor, BattleSystem.GetDamageType(injuryId2), injuryId2, num46 * 100, num3, BattleSystem.GetDamageTextSize(injuryId2), true, num2, true);
+                                            __instance.ShowBattleState(num33, isActor, 0);
                                         }
                                     }
                                 }
                             }
                             else
                             {
-                                bool gongFaDefEffect16 = this.GetGongFaDefEffect(num33, isActor, num2, 0);
+                                bool gongFaDefEffect16 = __instance.GetGongFaDefEffect(num33, isActor, num2, 0);
                                 if (gongFaDefEffect16)
                                 {
-                                    this.ChangeActorSp(isActor, 0, 2);
+                                    __instance.ChangeActorSp(isActor, 0, 2);
                                 }
                             }
                         }
@@ -1156,19 +1156,19 @@ namespace BossGongfaFixEnhance
                         {
                             if (num34 == 5315)
                             {
-                                bool gongFaDefEffect17 = this.GetGongFaDefEffect(num33, isActor, num2, 0);
+                                bool gongFaDefEffect17 = __instance.GetGongFaDefEffect(num33, isActor, num2, 0);
                                 if (gongFaDefEffect17)
                                 {
-                                    this.UpdateBattlerMove(!isActor, 90, null, null, false);
+                                    __instance.UpdateBattlerMove(!isActor, 90, null, null, false);
                                 }
                             }
                         }
                         else
                         {
-                            bool gongFaDefEffect18 = this.GetGongFaDefEffect(num33, isActor, num2, 0);
+                            bool gongFaDefEffect18 = __instance.GetGongFaDefEffect(num33, isActor, num2, 0);
                             if (gongFaDefEffect18)
                             {
-                                this.AddBattleState(num3, 2, 505313, 50 + Mathf.Max(150 - DateFile.instance.GetActorResources(num3)[3] * 5, 0), 1);
+                                __instance.AddBattleState(num3, 2, 505313, 50 + Mathf.Max(150 - DateFile.instance.GetActorResources(num3)[3] * 5, 0), 1);
                             }
                         }
                     }
