@@ -129,6 +129,28 @@ namespace BossGongfaFixEnhance
                     }
                 }
             }
+            var oldLabels = new List<Label>();
+            var newLabels = new List<Label>();
+            for (i = 0; i < modified.Count; i++) {
+                if (modified[i].labels.Any()) {
+                    for (j = 0; j < modified[i].labels.Count; j++) {
+                        oldLabels.Add(modified[i].labels[j]);
+                        modified[i].labels[j] = generator.DefineLabel();
+                        newLabels.Add(modified[i].labels[j]);
+                    }
+                }
+            }
+            Label tempLabel = null;
+            for (i = 0; i < modified.Count; i++) {
+                if (CodeInstructionExtensions.Branches(modified[i], out tempLabel)) {
+                    for (j = 0; j < oldLabels.Count; j++) {
+                        if (oldLabels[j] == tempLabel) {
+                            modified[i].operand = newLabels[j];
+                            break;
+                        }
+                    }
+                }
+            }
             codes.InsertRange(endIndex, modified);
             var newEnd = endIndex + modified.Count;
             codes[endIndex].labels = new List<Label>(codes[newEnd].labels);
