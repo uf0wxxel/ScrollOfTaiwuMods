@@ -248,6 +248,7 @@ namespace BossGongfaFixEnhance
             for (i = index - 2; i >= 0; i--) {
                 if (codes[i].opcode == OpCodes.Ldfld) {
                     copy3 = codes[i].Clone();
+                    break;
                 }
             }
             Main.Logger.Log(i.ToString());
@@ -255,6 +256,7 @@ namespace BossGongfaFixEnhance
             for (i = index + 2; i < codes.Count; i++) {
                 if (codes[i].opcode == OpCodes.Ldfld) {
                     copy2 = codes[i].Clone();
+                    break;
                 }
             }
             Main.Logger.Log(i.ToString());
