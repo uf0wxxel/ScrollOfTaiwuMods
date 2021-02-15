@@ -10,9 +10,14 @@ using UnityModManagerNet;
 
 namespace BossGongfaFixEnhance
 {
+    public class Settings : UnityModManager.ModSettings
+    {
+    }
+    
     public static class Main
     {
         public static UnityModManager.ModEntry Mod { get; private set; }
+        public static Settings settings;
         public static UnityModManager.ModEntry.ModLogger Logger => Mod?.Logger;
 
         public static bool Load(UnityModManager.ModEntry modEntry)
