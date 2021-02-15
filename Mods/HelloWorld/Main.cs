@@ -149,8 +149,8 @@ namespace BossGongfaFixEnhance
                 }
             }
             for (i = 0; i < modified.Count; i++) {
-                if (BranchCodes.contains(modified[i].opcode)) {
-                    Label? tempLabel;
+                if (branchCodes.contains(modified[i].opcode)) {
+                    Label tempLabel;
                     if (rpLabels.TryGetValue((Label)modified[i].operand, out tempLabel)) {
                         modified[i].operand = tempLabel;
                         break;
