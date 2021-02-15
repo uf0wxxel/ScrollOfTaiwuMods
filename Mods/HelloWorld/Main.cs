@@ -277,9 +277,9 @@ namespace BossGongfaFixEnhance
             codes[index + 1].labels.Add(l2);
             var toInsert = new List<CodeInstruction>(5);
             toInsert.Add(new CodeInstruction(OpCodes.Ldloc_0));
-            toInsert.Add(copy3);
+            toInsert.Add(copy3.Clone());
             toInsert.Add(new CodeInstruction(OpCodes.Brfalse_S, l1));
-            toInsert.Add(copy1);
+            toInsert.Add(copy1.Clone());
             toInsert.Add(new CodeInstruction(OpCodes.Br_S, l2));
             codes.InsertRange(index, toInsert);
             for (index = -1, i += 7; i < codes.Count; i++) {
@@ -295,8 +295,12 @@ namespace BossGongfaFixEnhance
             l2 = generator.DefineLabel();
             codes[index].labels.Add(l1);
             codes[index + 1].labels.Add(l2);
-            toInsert[2] = new CodeInstruction(OpCodes.Brfalse_S, l1);
-            toInsert[4] = new CodeInstruction(OpCodes.Br_S, l2);
+            toInsert = new List<CodeInstruction>(5);
+            toInsert.Add(new CodeInstruction(OpCodes.Ldloc_0));
+            toInsert.Add(copy3.Clone());
+            toInsert.Add(new CodeInstruction(OpCodes.Brfalse_S, l1));
+            toInsert.Add(copy1.Clone());
+            toInsert.Add(new CodeInstruction(OpCodes.Br_S, l2));
             codes.InsertRange(index, toInsert);
             Main.Logger.Log("BattleSystem_UseGongFa_Patch success");
             return codes.AsEnumerable();
