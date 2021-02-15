@@ -5,7 +5,7 @@ using System.Reflection.Emit;
 using System.Collections.Generic;
 using System.Linq;
 using Harmony12;
-using HarmonyLib;
+using Harmony12.HarmonyLib;
 using UnityEngine;
 using UnityModManagerNet;
 
