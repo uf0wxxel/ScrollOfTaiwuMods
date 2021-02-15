@@ -134,7 +134,7 @@ namespace BossGongfaFixEnhance
             codes[endIndex].labels = new List<Label>(codes[newEnd].labels);
             codes[newEnd].labels.Clear();
             Label newLabel = generator.DefineLabel();
-            codes[newEnd].labels.add(newLabel);
+            codes[newEnd].labels.Add(newLabel);
             for (i = endIndex; i < newEnd; i++) {
                 if (codes[i].opcode == OpCodes.Brfalse) {
                     codes[i].operand = newLabel;
