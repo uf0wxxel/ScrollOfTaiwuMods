@@ -94,19 +94,19 @@ namespace BossGongfaFixEnhance
                 return instructions;
             }
             var modified = codes.GetRange(startIndex, endIndex - startIndex);
-            CodeInstruction inst1 = null;
-            CodeInstruction inst2 = null;
+            object inst1 = null;
+            object inst2 = null;
             i = 0;
             for (; i < modified.Count; i++) {
                 if (modified[i].opcode == OpCodes.Ldfld) {
-                    inst1 = modified[i];
+                    inst1 = modified[i].operand;
                     i++;
                     break;
                 }
             }
             for (; i < modified.Count; i++) {
                 if (modified[i].opcode == OpCodes.Ldfld) {
-                    inst2 = modified[i];
+                    inst2 = modified[i].operand;
                     break;
                 }
             }
@@ -116,9 +116,9 @@ namespace BossGongfaFixEnhance
             for (; i < modified.Count && j < 8; i++) {
                 if (modified[i].opcode == OpCodes.Ldfld) {
                     if (j % 2 == 0) {
-                        modified[i] = inst2;
+                        modified[i].operand = inst2;
                     } else {
-                        modified[i] = inst1;
+                        modified[i].operand = inst1;
                     }
                     j++;
                 }
