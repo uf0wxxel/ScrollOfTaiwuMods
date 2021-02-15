@@ -51,7 +51,7 @@ namespace BossGongfaFixEnhance
         }
     }
 
-    /*[HarmonyPatch(typeof(BattleSystem), "SetDamage")]
+    [HarmonyPatch(typeof(BattleSystem), "SetDamage")]
     public static class BattleSystem_SetDamage_Patch
     {
         static readonly HashSet<OpCode> branchCodes = new HashSet<OpCode>
@@ -100,46 +100,57 @@ namespace BossGongfaFixEnhance
             if (startIndex < 0 || endIndex <= startIndex) {
                 return instructions;
             }
+            Main.Logger.Log("1: " + startIndex.ToString());
+            Main.Logger.Log("1: " + endIndex.ToString());
             var modified = codes.GetRange(startIndex, endIndex - startIndex);
+            for (i = 0; i < modified.Count; i++) {
+                List<Label> temp = modified[i].labels;
+                modified[i] = modified[i].Clone();
+                if (temp.Any()) {
+                    modified[i].labels = new List<Label>(temp);
+                }
+            }
+            modified[0].labels.Clear();
             object inst1 = null;
             object inst2 = null;
             for (i = 0; i < modified.Count; i++) {
                 if (modified[i].opcode == OpCodes.Ldfld) {
                     inst1 = modified[i].operand;
-                    i++;
                     break;
                 }
             }
-            for (; i < modified.Count; i++) {
+            Main.Logger.Log("2: " + i.ToString());
+            for (i++; i < modified.Count; i++) {
                 if (modified[i].opcode == OpCodes.Ldfld) {
                     inst2 = modified[i].operand;
                     break;
                 }
             }
+            Main.Logger.Log("2: " + i.ToString());
             if (inst1 == null || inst2 == null) return instructions;
             var j = 0;
             for (i = 0; i < modified.Count && j < 8; i++) {
                 if (modified[i].opcode == OpCodes.Ldfld) {
                     if (j % 2 == 0) {
                         modified[i].operand = inst2;
+                        Main.Logger.Log("3.1: " + i.ToString());
                     } else {
                         modified[i].operand = inst1;
+                        Main.Logger.Log("3.2: " + i.ToString());
                     }
                     j++;
                 }
             }
             for (i = 0; i < modified.Count; i++) {
-                if (modified[i].opcode == OpCodes.Ldc_I4) {
-                    int val = (int)modified[i].operand;
-                    if (val == 0x7534) {
-                        modified[i].operand = 0x9c44;
-                    }
+                if (modified[i].opcode == OpCodes.Ldc_I4 && (int)modified[i].operand == 0x7534) {
+                    modified[i].operand = 0x9c44;
+                    Main.Logger.Log("4: " + i.ToString());
                 }
             }
-            modified[0].labels.Clear();
             var rpLabels = new Dictionary<Label, Label>();
             for (i = 0; i < modified.Count; i++) {
                 if (modified[i].labels.Any()) {
+                    Main.Logger.Log("5: " + i.ToString());
                     for (j = 0; j < modified[i].labels.Count; j++) {
                         var oldLabel = modified[i].labels[j];
                         modified[i].labels[j] = generator.DefineLabel();
@@ -151,19 +162,23 @@ namespace BossGongfaFixEnhance
                 if (branchCodes.Contains(modified[i].opcode)) {
                     Label tempLabel;
                     if (rpLabels.TryGetValue((Label)modified[i].operand, out tempLabel)) {
+                        Main.Logger.Log("6.1: " + i.ToString());
                         modified[i].operand = tempLabel;
-                        break;
+                    } else {
+                        Main.Logger.Log("6.0: " + i.ToString());
                     }
                 }
             }
             codes.InsertRange(endIndex, modified);
             var newEnd = endIndex + modified.Count;
+            Main.Logger.Log("7: " + newEnd.ToString());
             codes[endIndex].labels = new List<Label>(codes[newEnd].labels);
             codes[newEnd].labels.Clear();
             Label newLabel = generator.DefineLabel();
             codes[newEnd].labels.Add(newLabel);
             for (i = endIndex; i < newEnd; i++) {
                 if (codes[i].opcode == OpCodes.Brfalse) {
+                    Main.Logger.Log("8.0: " + i.ToString());
                     codes[i].operand = newLabel;
                     break;
                 }
@@ -171,7 +186,7 @@ namespace BossGongfaFixEnhance
             Main.Logger.Log("BattleSystem_SetDamage_Patch success");
             return codes.AsEnumerable();
         }
-    }*/
+    }
 
     [HarmonyPatch(typeof(BattleSystem), "AutoSetDefGongFa")]
     class BattleSystem_AutoSetDefGongFa_Patch
