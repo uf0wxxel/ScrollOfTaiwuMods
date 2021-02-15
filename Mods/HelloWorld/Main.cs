@@ -243,18 +243,21 @@ namespace BossGongfaFixEnhance
                 return instructions;
             }
             CodeInstruction copy1 = codes[index].Clone();
+            Main.Logger.Log(index.ToString());
             CodeInstruction copy3 = null;
             for (i = index - 2; i >= 0; i--) {
                 if (codes[i].opcode == OpCodes.Ldfld) {
                     copy3 = codes[i].Clone();
                 }
             }
+            Main.Logger.Log(i.ToString());
             CodeInstruction copy2 = null;
             for (i = index + 2; i < codes.Count; i++) {
                 if (codes[i].opcode == OpCodes.Ldfld) {
                     copy2 = codes[i].Clone();
                 }
             }
+            Main.Logger.Log(i.ToString());
             if (copy2 == null || copy3 == null) {
                 return instructions;
             }
@@ -276,6 +279,7 @@ namespace BossGongfaFixEnhance
             if (index < 0) {
                 return instructions;
             }
+            Main.Logger.Log(index.ToString());
             Label l1 = generator.DefineLabel();
             Label l2 = generator.DefineLabel();
             codes[index].labels.Add(l1);
@@ -287,6 +291,7 @@ namespace BossGongfaFixEnhance
             toInsert.Add(copy1.Clone());
             toInsert.Add(new CodeInstruction(OpCodes.Br, l2));
             codes.InsertRange(index, toInsert);
+            Main.Logger.Log(index.ToString());
             for (index = -1, i += 7; i < codes.Count; i++) {
                 if (codes[i].opcode == OpCodes.Ldfld && codes[i].operand == copy2.operand) {
                     index = i;
@@ -296,6 +301,7 @@ namespace BossGongfaFixEnhance
             if (index < 0) {
                 return instructions;
             }
+            Main.Logger.Log(index.ToString());
             Label l3 = generator.DefineLabel();
             Label l4 = generator.DefineLabel();
             codes[index].labels.Add(l3);
