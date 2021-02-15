@@ -140,8 +140,9 @@ namespace BossGongfaFixEnhance
                     }
                 }
             }
+            Label? tempLabel;
             for (i = 0; i < modified.Count; i++) {
-                if (Branches(modified[i], out tempLabel)) {
+                if (HarmonyLib.CodeInstructionExtensions.Branches(modified[i], out tempLabel)) {
                     for (j = 0; j < oldLabels.Count; j++) {
                         if (oldLabels[j] == tempLabel) {
                             modified[i].operand = newLabels[j];
