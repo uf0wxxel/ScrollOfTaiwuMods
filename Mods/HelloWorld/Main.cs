@@ -51,8 +51,7 @@ namespace BossGongfaFixEnhance
         }
     }
 
-    [HarmonyDebug]
-    [HarmonyPatch(typeof(BattleSystem), "SetDamage")]
+    /*[HarmonyPatch(typeof(BattleSystem), "SetDamage")]
     public static class BattleSystem_SetDamage_Patch
     {
         static readonly HashSet<OpCode> branchCodes = new HashSet<OpCode>
@@ -173,7 +172,7 @@ namespace BossGongfaFixEnhance
             Main.Logger.Log("BattleSystem_SetDamage_Patch success");
             return codes.AsEnumerable();
         }
-    }
+    }*/
 
     [HarmonyPatch(typeof(BattleSystem), "AutoSetDefGongFa")]
     class BattleSystem_AutoSetDefGongFa_Patch
@@ -202,11 +201,21 @@ namespace BossGongfaFixEnhance
                 }
             }
             if (index < 0) return instructions;
-            for (; i < codes.Count; i++) {
+            CodeInstruction copy = null;
+            for (index = -1; i < codes.Count; i++) {
                 if (codes[i].opcode == OpCodes.Ldc_I4_1) {
-                    codes[i].opcode = OpCodes.Ldc_I4_2;
+                    index = i;
+                    break;
+                }
+                if (codes[i].opcode == OpCodes.Call) {
+                    copy = codes[i].Clone();
                 }
             }
+            if (index < 0 || copyed == null) return instructions;
+            var toInsert = new List<CodeInstruction>(2);
+            toInsert.Add(new CodeInstruction(OpCodes.Ldc_I4_4));
+            toInsert.Add(copy);
+            codes.InsertRange(index + 1, toInsert);
             Main.Logger.Log("BattleSystem_AutoSetDefGongFa_Patch success");
             return codes.AsEnumerable();
         }
