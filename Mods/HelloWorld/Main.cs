@@ -154,6 +154,8 @@ namespace BossGongfaFixEnhance
                     if (rpLabels.TryGetValue((Label)modified[i].operand, out tempLabel)) {
                         modified[i].operand = tempLabel;
                         break;
+                    } else {
+                        Main.Logger.Log("BattleSystem_SetDamage_Patch temp failed");
                     }
                 }
             }
