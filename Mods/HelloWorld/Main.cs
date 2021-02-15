@@ -210,6 +210,7 @@ namespace BossGongfaFixEnhance
                 }
             }
             if (index < 0 || copy == null) return instructions;
+            Main.Logger.Log(index.ToString());
             var toInsert = new List<CodeInstruction>(2);
             toInsert.Add(new CodeInstruction(OpCodes.Ldc_I4_4));
             toInsert.Add(copy);
@@ -293,7 +294,6 @@ namespace BossGongfaFixEnhance
             toInsert.Add(copy1.Clone());
             toInsert.Add(new CodeInstruction(OpCodes.Br, l2));
             codes.InsertRange(index, toInsert);
-            Main.Logger.Log(index.ToString());
             for (index = -1, i += 7; i < codes.Count; i++) {
                 if (codes[i].opcode == OpCodes.Ldfld && codes[i].operand == copy2.operand) {
                     index = i;
