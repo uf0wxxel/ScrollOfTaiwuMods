@@ -66,6 +66,7 @@ namespace BossGongfaFixEnhance
             for (; i < codes.Count; i++) {
                 if (codes[i].opcode == OpCodes.Ldc_I4) {
                     int val = (int)codes[i].operand;
+                    Main.logger.Log(val);
                     if (val == 0x7534) {
                         startIndex = i - 1;
                         break;
@@ -134,6 +135,7 @@ namespace BossGongfaFixEnhance
                 }
             }
             codes.InsertRange(endIndex, modified);
+            Main.logger.Log("BattleSystem_SetDamage_Patch success");
             return codes.AsEnumerable();
         }
     }
@@ -170,6 +172,7 @@ namespace BossGongfaFixEnhance
                     codes[i].opcode = OpCodes.Ldc_I4_2;
                 }
             }
+            Main.logger.Log("BattleSystem_AutoSetDefGongFa_Patch success");
             return codes.AsEnumerable();
         }
     }
