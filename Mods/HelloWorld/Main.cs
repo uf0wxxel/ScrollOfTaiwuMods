@@ -54,7 +54,7 @@ namespace BossGongfaFixEnhance
     [HarmonyPatch(typeof(BattleSystem), "SetDamage")]
     public static class BattleSystem_SetDamage_Patch
     {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             Main.Logger.Log("BattleSystem_SetDamage_Patch start");
             var codes = new List<CodeInstruction>(instructions);
@@ -96,8 +96,7 @@ namespace BossGongfaFixEnhance
             var modified = codes.GetRange(startIndex, endIndex - startIndex);
             object inst1 = null;
             object inst2 = null;
-            i = 0;
-            for (; i < modified.Count; i++) {
+            for (i = 0; i < modified.Count; i++) {
                 if (modified[i].opcode == OpCodes.Ldfld) {
                     inst1 = modified[i].operand;
                     i++;
@@ -111,9 +110,8 @@ namespace BossGongfaFixEnhance
                 }
             }
             if (inst1 == null || inst2 == null) return instructions;
-            i = 0;
             var j = 0;
-            for (; i < modified.Count && j < 8; i++) {
+            for (i = 0; i < modified.Count && j < 8; i++) {
                 if (modified[i].opcode == OpCodes.Ldfld) {
                     if (j % 2 == 0) {
                         modified[i].operand = inst2;
@@ -123,8 +121,7 @@ namespace BossGongfaFixEnhance
                     j++;
                 }
             }
-            i = 0;
-            for (; i < modified.Count; i++) {
+            for (i = 0; i < modified.Count; i++) {
                 if (modified[i].opcode == OpCodes.Ldc_I4) {
                     int val = (int)modified[i].operand;
                     if (val == 0x7534) {
@@ -133,6 +130,17 @@ namespace BossGongfaFixEnhance
                 }
             }
             codes.InsertRange(endIndex, modified);
+            var newEnd = endIndex + modified.Count;
+            codes[endIndex].labels = new List<Label>(codes[newEnd].labels);
+            codes[newEnd].labels.Clear();
+            Label newLabel = generator.DefineLabel();
+            codes[newEnd].labels.add(newLabel);
+            for (i = endIndex; i < newEnd; i++) {
+                if (codes[i].opcode == OpCodes.Brfalse) {
+                    codes[i].operand = newLabel;
+                    break;
+                }
+            }
             Main.Logger.Log("BattleSystem_SetDamage_Patch success");
             return codes.AsEnumerable();
         }
@@ -158,8 +166,7 @@ namespace BossGongfaFixEnhance
                 }
             }
             if (index < 0) return instructions;
-            index = -1;
-            for (; i < codes.Count; i++) {
+            for (index = -1; i < codes.Count; i++) {
                 if (codes[i].opcode == OpCodes.Ldc_I4_M1) {
                     index = i;
                     break;
