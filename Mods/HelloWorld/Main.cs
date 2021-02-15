@@ -224,10 +224,85 @@ namespace BossGongfaFixEnhance
     [HarmonyPatch(typeof(BattleSystem), "UseGongFa")]
     class BattleSystem_UseGongFa_Patch
     {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            // Todo
-            return instructions;
+            Main.Logger.Log("BattleSystem_UseGongFa_Patch start");
+            var codes = new List<CodeInstruction>(instructions);
+            var i = 0;
+            var index = -1;
+            var found = false;
+            Main.Logger.Log(codes.Count.ToString());
+            for (; i + 2 < codes.Count; i++) {
+                if (codes[i].opcode == OpCodes.Ldarg_0 && codes[i + 1].opcode == OpCodes.Ldfld && codes[i + 2].opcode == OpCodes.Ldloc_2) {
+                    if (found) {
+                        index = i + 1;
+                        break;
+                    } else {
+                        found = true;
+                    }
+                }
+            }
+            if (index < 3) {
+                return instructions;
+            }
+            CodeInstruction copy = codes[index].Clone();
+            CodeInstruction copy3 = codes[index - 3].Clone();
+            CodeInstruction copy2 = null;
+            for (i = index + 2; i < codes.Count; i++) {
+                if (codes[i].opcode == OpCodes.Ldfld) {
+                    copy2 = codes[i].Clone();
+                }
+            }
+            if (copy2 == null) {
+                return instructions;
+            }
+            for (index = -1, i = 0; i < codes.Count; i++) {
+                if (codes[i].opcode == OpCodes.Ldc_I4 && (int)codes[i].operand == 0x4e29) {
+                    index = i;
+                    break;
+                }
+            }
+            if (index < 0) {
+                return instructions;
+            }
+            for (index = -1; i < codes.Count; i++) {
+                if (codes[i].opcode == OpCodes.Ldfld && codes[i].operand == copy2.operand) {
+                    index = i;
+                    break;
+                }
+            }
+            if (index < 0) {
+                return instructions;
+            }
+            Label l1 = generator.DefineLabel();
+            Label l2 = generator.DefineLabel();
+            codes[index].labels.Add(l1);
+            codes[index + 1].labels.Add(l2);
+            var toInsert = new List<CodeInstruction>(5);
+            toInsert.Add(new CodeInstruction(Opcodes.Ldloc_0));
+            toInsert.Add(copy3);
+            toInsert.Add(new CodeInstruction(Opcodes.Brfalse_s, l1));
+            toInsert.Add(copy1);
+            toInsert.Add(new CodeInstruction(Opcodes.Br_s, l2));
+            codes.InsertRange(index, toInsert);
+            for (index = -1, i += 7; i < codes.Count; i++) {
+                if (codes[i].opcode == OpCodes.Ldfld && codes[i].operand == copy2.operand) {
+                    index = i;
+                    break;
+                }
+            }
+            if (index < 0) {
+                return instructions;
+            }
+            l1 = generator.DefineLabel();
+            l2 = generator.DefineLabel();
+            codes[index].labels.Add(l1);
+            codes[index + 1].labels.Add(l2);
+            toInsert[2] = new CodeInstruction(Opcodes.Brfalse_s, l1);
+            toInsert[4] = new CodeInstruction(Opcodes.Br_s, l2);
+            codes.InsertRange(index, toInsert);
+            Main.Logger.Log("BattleSystem_UseGongFa_Patch success");
+            return codes.AsEnumerable();
         }
     }
 }
