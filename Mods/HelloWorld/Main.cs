@@ -55,6 +55,14 @@ namespace BossGongfaFixEnhance
     [HarmonyPatch(typeof(BattleSystem), "SetDamage")]
     public static class BattleSystem_SetDamage_Patch
     {
+        static readonly HashSet<OpCode> branchCodes = new HashSet<OpCode>
+        {
+            OpCodes.Br_S, OpCodes.Brfalse_S, OpCodes.Brtrue_S, OpCodes.Beq_S, OpCodes.Bge_S, OpCodes.Bgt_S,
+            OpCodes.Ble_S, OpCodes.Blt_S, OpCodes.Bne_Un_S, OpCodes.Bge_Un_S, OpCodes.Bgt_Un_S, OpCodes.Ble_Un_S,
+            OpCodes.Blt_Un_S, OpCodes.Br, OpCodes.Brfalse, OpCodes.Brtrue, OpCodes.Beq, OpCodes.Bge, OpCodes.Bgt,
+            OpCodes.Ble, OpCodes.Blt, OpCodes.Bne_Un, OpCodes.Bge_Un, OpCodes.Bgt_Un, OpCodes.Ble_Un, OpCodes.Blt_Un
+        };
+        
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             Main.Logger.Log("BattleSystem_SetDamage_Patch start");
@@ -91,7 +99,7 @@ namespace BossGongfaFixEnhance
                     break;
                 }
             }
-            if (startIndex < 0 || endIndex < startIndex) {
+            if (startIndex < 0 || endIndex <= startIndex) {
                 return instructions;
             }
             var modified = codes.GetRange(startIndex, endIndex - startIndex);
@@ -130,25 +138,23 @@ namespace BossGongfaFixEnhance
                     }
                 }
             }
-            var oldLabels = new List<Label>();
-            var newLabels = new List<Label>();
+            modified[0].labels.Clear();
+            var rpLabels = new Dictionary<Label, Label>();
             for (i = 0; i < modified.Count; i++) {
                 if (modified[i].labels.Any()) {
                     for (j = 0; j < modified[i].labels.Count; j++) {
-                        oldLabels.Add(modified[i].labels[j]);
+                        var oldLabel = modified[i].labels[j];
                         modified[i].labels[j] = generator.DefineLabel();
-                        newLabels.Add(modified[i].labels[j]);
+                        rpLabels[oldLabel] = modified[i].labels[j];
                     }
                 }
             }
-            Label? tempLabel;
             for (i = 0; i < modified.Count; i++) {
-                if (modified[i].Branches(out tempLabel)) {
-                    for (j = 0; j < oldLabels.Count; j++) {
-                        if (oldLabels[j] == tempLabel) {
-                            modified[i].operand = newLabels[j];
-                            break;
-                        }
+                if (BranchCodes.contains(modified[i].opcode)) {
+                    Label? tempLabel;
+                    if (rpLabels.TryGetValue((Label)modified[i].operand, out tempLabel)) {
+                        modified[i].operand = tempLabel;
+                        break;
                     }
                 }
             }
