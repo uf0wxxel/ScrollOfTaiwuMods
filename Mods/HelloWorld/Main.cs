@@ -66,7 +66,7 @@ namespace BossGongfaFixEnhance
             for (; i < codes.Count; i++) {
                 if (codes[i].opcode == OpCodes.Ldc_I4) {
                     int val = (int)codes[i].operand;
-                    Main.Logger.Log(val);
+                    Main.Logger.Log(val.ToString());
                     if (val == 0x7534) {
                         startIndex = i - 1;
                         break;
