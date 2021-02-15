@@ -211,7 +211,7 @@ namespace BossGongfaFixEnhance
                     copy = codes[i].Clone();
                 }
             }
-            if (index < 0 || copyed == null) return instructions;
+            if (index < 0 || copy == null) return instructions;
             var toInsert = new List<CodeInstruction>(2);
             toInsert.Add(new CodeInstruction(OpCodes.Ldc_I4_4));
             toInsert.Add(copy);
