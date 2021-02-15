@@ -23,3 +23,8 @@ jobs:
       run: dotnet build --no-restore -c Release
     - name: Test
       run: dotnet test --no-build --verbosity normal
+    - name: Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: mods
+        path: '_publish\**\*.zip'
