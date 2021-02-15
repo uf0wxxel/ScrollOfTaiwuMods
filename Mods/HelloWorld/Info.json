@@ -1,8 +1,8 @@
 ﻿{
-  "Id": "HelloWorldMod",
-  "DisplayName": "测试MOD",
-  "Author": "hanabi1224",
+  "Id": "BossGongfaFixEnhance",
+  "DisplayName": "Boss绝技功法修复增强",
+  "Author": "test",
   "Version": "0.0.1",
-  "AssemblyName": "HelloWorld.dll",
-  "EntryMethod": "HelloWorld.Main.Load"
+  "AssemblyName": "BossGongfaFixEnhance.dll",
+  "EntryMethod": "BossGongfaFixEnhance.Main.Load"
 }

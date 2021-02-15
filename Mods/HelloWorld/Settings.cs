@@ -1,6 +1,6 @@
 ﻿using UnityModManagerNet;
 
-namespace HelloWorld
+namespace BossGongfaFixEnhance
 {
     public class Settings : UnityModManager.ModSettings
     {
