@@ -59,10 +59,12 @@ namespace BossGongfaFixEnhance
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             if (!Main.Enabled) return instructions;
+            Main.Logger.Log("BattleSystem_SetDamage_Patch start");
             var codes = new List<CodeInstruction>(instructions);
             var i = 0;
             var startIndex = -1;
             var endIndex = -1;
+            Main.Logger.Log(codes.Count.ToString());
             for (; i < codes.Count; i++) {
                 if (codes[i].opcode == OpCodes.Ldc_I4) {
                     int val = (int)codes[i].operand;
@@ -146,9 +148,11 @@ namespace BossGongfaFixEnhance
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             if (!Main.Enabled) return instructions;
+            Main.Logger.Log("BattleSystem_AutoSetDefGongFa_Patch start");
             var codes = new List<CodeInstruction>(instructions);
             var i = 0;
             var index = -1;
+            Main.Logger.Log(codes.Count.ToString());
             for (; i < codes.Count; i++) {
                 if (codes[i].opcode == OpCodes.Ldc_I4) {
                     int val = (int)codes[i].operand;
