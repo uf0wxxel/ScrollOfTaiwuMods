@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModPackageTask", "_Build\Mo
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "_Shared", "Mods\_Shared\_Shared.shproj", "{8AA4E47C-0BD2-4E1E-9A47-0B1BBB935D00}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HelloWorld", "Mods\HelloWorld\HelloWorld.csproj", "{78E707C6-4864-448B-9B44-439BD1FEE26E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BossGongfaFixEnhance", "Mods\HelloWorld\BossGongfaFixEnhance.csproj", "{78E707C6-4864-448B-9B44-439BD1FEE26E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoreInfo", "Mods\MoreInfo\MoreInfo.csproj", "{2E6DCACF-514A-48C3-BBAC-3CD9A49DBE24}"
 EndProject
