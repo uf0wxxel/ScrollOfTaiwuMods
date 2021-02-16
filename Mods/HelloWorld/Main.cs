@@ -20,7 +20,7 @@ namespace BossGongfaFixEnhance
         public static Settings settings;
         public static UnityModManager.ModEntry.ModLogger Logger => Mod?.Logger;
         
-        public static const bool DEBUG = true;
+        public const bool DEBUG = true;
 
         public static bool Load(UnityModManager.ModEntry modEntry)
         {
