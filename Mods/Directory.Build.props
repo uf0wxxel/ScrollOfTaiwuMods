@@ -2,7 +2,7 @@
   <PropertyGroup>
     <DebugType>none</DebugType>
     <LangVersion>latest</LangVersion>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <DefaultTargetFramework>netframework4.7.2</DefaultTargetFramework>
